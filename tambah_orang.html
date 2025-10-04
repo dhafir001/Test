@@ -1,0 +1,99 @@
+<?php
+/**
+ * =====================================================
+ * Tambah Data Orang Asing
+ * Sistem Informasi Tindakan Administratif Keimigrasian
+ * =====================================================
+ */
+
+include 'config.php';
+
+// ==================== 1. PROSES SIMPAN DATA ====================
+if (isset($_POST['submit'])) {
+    // Ambil data dari form & bersihkan
+    $nama = mysqli_real_escape_string($conn, $_POST['nama']);
+    $kewarganegaraan = mysqli_real_escape_string($conn, $_POST['kewarganegaraan']);
+    $paspor = mysqli_real_escape_string($conn, $_POST['paspor']);
+    $jenis_kelamin = mysqli_real_escape_string($conn, $_POST['jenis_kelamin']); // ✅ ambil jenis kelamin
+
+    // Validasi sederhana
+    if (empty($nama) || empty($kewarganegaraan) || empty($paspor) || empty($jenis_kelamin)) {
+        $error = "Semua field harus diisi!";
+    } else {
+        // Masukkan ke database
+        $insert = mysqli_query($conn, "INSERT INTO orang_asing (nama, kewarganegaraan, paspor, jenis_kelamin) 
+                                       VALUES ('$nama', '$kewarganegaraan', '$paspor', '$jenis_kelamin')");
+        if ($insert) {
+            // Redirect ke daftar orang asing
+            header("Location: orang_asing.php?pesan=added&nama=" . urlencode($nama));
+            exit;
+        } else {
+            $error = "Gagal menambahkan data: " . mysqli_error($conn);
+        }
+    }
+}
+?>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Tambah Orang Asing</title>
+    <!-- Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Include global styles for a modern look -->
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="bg-light">
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow">
+                <div class="card-header bg-success text-white">
+                    <h4>Tambah Orang Asing</h4>
+                </div>
+                <div class="card-body">
+                    <!-- Notifikasi Error -->
+                    <?php if (!empty($error)): ?>
+                        <div class="alert alert-danger alert-dismissible fade show">
+                            <?= $error; ?>
+                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                        </div>
+                    <?php endif; ?>
+
+                    <!-- Form Tambah -->
+                    <form method="POST">
+                        <div class="mb-3">
+                            <label class="form-label">Nama</label>
+                            <input type="text" name="nama" class="form-control" placeholder="Masukkan nama lengkap" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Kewarganegaraan</label>
+                            <input type="text" name="kewarganegaraan" class="form-control" placeholder="Masukkan kewarganegaraan" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Nomor Paspor</label>
+                            <input type="text" name="paspor" class="form-control" placeholder="Masukkan nomor paspor" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Jenis Kelamin</label>
+                            <select name="jenis_kelamin" class="form-control" required>
+                                <option value="">-- Pilih Jenis Kelamin --</option>
+                                <option value="L">Laki-laki</option>
+                                <option value="P">Perempuan</option>
+                            </select>
+                        </div>
+                        <button type="submit" name="submit" class="btn btn-success">Simpan</button>
+                        <a href="orang_asing.php" class="btn btn-secondary">← Kembali</a>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

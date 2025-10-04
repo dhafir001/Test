@@ -1,0 +1,148 @@
+<?php
+/**
+ * =====================================================
+ * Edit Data Tindakan
+ * Sistem Informasi Tindakan Administratif Keimigrasian
+ * =====================================================
+ */
+
+include 'config.php';
+
+// ==================== 1. CEK PARAMETER ID ====================
+if (!isset($_GET['id'])) {
+    die(" Error: ID tindakan tidak ditemukan di URL!");
+}
+$id = intval($_GET['id']); // pastikan integer
+
+// ==================== 2. AMBIL DATA TINDAKAN ====================
+$sql = "SELECT * FROM tindakan WHERE id=$id";
+$query = mysqli_query($conn, $sql);
+
+if (!$query || mysqli_num_rows($query) == 0) {
+    die(" Data tindakan dengan ID $id tidak ditemukan!");
+}
+$data = mysqli_fetch_assoc($query);
+
+// ✅ pecah jenis_tindakan jadi array
+$selected_jenis = array_map('trim', explode(',', $data['jenis_tindakan']));
+
+// ==================== 3. AMBIL DATA ORANG ASING ====================
+$orang = mysqli_query($conn, "SELECT * FROM orang_asing ORDER BY nama ASC");
+
+// ==================== 4. PROSES UPDATE ====================
+if (isset($_POST['submit'])) {
+    $orang_asing_id   = intval($_POST['orang_asing_id']);
+    $tanggal_tindakan = mysqli_real_escape_string($conn, $_POST['tanggal_tindakan']);
+    $keterangan       = mysqli_real_escape_string($conn, $_POST['keterangan']);
+
+    // ✅ ambil jenis tindakan multi-select
+    $jenis_tindakan = isset($_POST['jenis_tindakan']) ? implode(",", $_POST['jenis_tindakan']) : '';
+
+    if (empty($orang_asing_id) || empty($jenis_tindakan) || empty($tanggal_tindakan)) {
+        $error = " Semua field wajib diisi!";
+    } else {
+        $update = mysqli_query($conn, "UPDATE tindakan 
+            SET orang_asing_id='$orang_asing_id', 
+                jenis_tindakan='$jenis_tindakan', 
+                tanggal_tindakan='$tanggal_tindakan', 
+                keterangan='$keterangan'
+            WHERE id=$id");
+
+        if ($update) {
+            header("Location: tindakan.php?pesan=updated");
+            exit;
+        } else {
+            $error = " Gagal update data: " . mysqli_error($conn);
+        }
+    }
+}
+?>
+
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <title>Edit Tindakan</title>
+    <!-- Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Include global styles for a modern look -->
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="bg-light">
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-7">
+            <div class="card shadow">
+                <div class="card-header bg-warning">
+                    <h4 class="mb-0"> Edit Data Tindakan</h4>
+                </div>
+                <div class="card-body">
+                    
+                    <!-- Notifikasi Error -->
+                    <?php if (!empty($error)): ?>
+                        <div class="alert alert-danger alert-dismissible fade show">
+                            <?= $error; ?>
+                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                        </div>
+                    <?php endif; ?>
+
+                    <!-- Form Edit -->
+                    <form method="POST">
+                        <div class="mb-3">
+                            <label class="form-label">Nama Orang Asing</label>
+                            <select name="orang_asing_id" class="form-control" required>
+                                <option value="">-- Pilih Orang Asing --</option>
+                                <?php while ($o = mysqli_fetch_assoc($orang)) { ?>
+                                    <option value="<?= $o['id']; ?>" 
+                                        <?= ($o['id'] == $data['orang_asing_id']) ? 'selected' : ''; ?>>
+                                        <?= $o['nama']; ?> (<?= $o['paspor']; ?>)
+                                    </option>
+                                <?php } ?>
+                            </select>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Jenis Tindakan (bisa pilih lebih dari satu)</label>
+                            <select name="jenis_tindakan[]" class="form-control" multiple required>
+                                <?php
+                                $jenis_list = [
+                                    "Pencatuman dalam daftar pencegahan atau penangkalan",
+                                    "Pembatasan, perubahan, atau pembatalan izin tinggal",
+                                    "Larangan untuk berada di satu atau beberapa tempat tertentu di Wilayah Indonesia",
+                                    "Keharusan untuk bertempat tinggal di suatu tempat tertentu di Wilayah Indonesia",
+                                    "Pengenaan biaya beban",
+                                    "Deportasi dari Wilayah Indonesia"
+                                ];
+                                foreach ($jenis_list as $j) {
+                                    $sel = in_array($j, $selected_jenis) ? "selected" : "";
+                                    echo "<option value='$j' $sel>$j</option>";
+                                }
+                                ?>
+                            </select>
+                            <small class="text-muted">Tahan tombol <b>CTRL</b> untuk pilih lebih dari satu</small>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Tanggal Tindakan</label>
+                            <input type="date" name="tanggal_tindakan" class="form-control" value="<?= $data['tanggal_tindakan']; ?>" required>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Keterangan</label>
+                            <textarea name="keterangan" class="form-control" rows="3"><?= $data['keterangan']; ?></textarea>
+                        </div>
+
+                        <button type="submit" name="submit" class="btn btn-success"> Simpan Perubahan</button>
+                        <a href="tindakan.php" class="btn btn-secondary">← Kembali</a>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

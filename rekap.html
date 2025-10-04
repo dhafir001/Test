@@ -1,0 +1,1021 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Rekapitulasi - Sistem Informasi TAK</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #4361ee;
+      --primary-light: #4895ef;
+      --secondary: #3f37c9;
+      --success: #4cc9f0;
+      --danger: #f72585;
+      --warning: #f8961e;
+      --info: #4895ef;
+      --dark: #1e1e2d;
+      --light: #f8f9fa;
+      --gray: #6c757d;
+      --gray-light: #e9ecef;
+      --sidebar-width: 260px;
+      --header-height: 70px;
+      --transition: all 0.3s ease;
+      --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.1);
+      --radius: 12px;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: #f5f7fb;
+      color: #333;
+      line-height: 1.6;
+      display: flex;
+      min-height: 100vh;
+    }
+
+    /* Sidebar Styles */
+    .sidebar {
+      width: var(--sidebar-width);
+      background: linear-gradient(180deg, var(--dark) 0%, #2d2d44 100%);
+      color: white;
+      height: 100vh;
+      position: fixed;
+      overflow-y: auto;
+      transition: var(--transition);
+      z-index: 1000;
+      box-shadow: var(--shadow-lg);
+    }
+
+    .logo-container {
+      padding: 1.5rem 1rem;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 1rem;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .logo-container img {
+      max-height: 50px;
+      max-width: 100px;
+      object-fit: contain;
+    }
+
+    .sidebar h2 {
+      font-size: 0.9rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      padding: 1.5rem 1.5rem 0.5rem;
+      color: rgba(255, 255, 255, 0.6);
+    }
+
+    .sidebar a {
+      display: flex;
+      align-items: center;
+      padding: 0.9rem 1.5rem;
+      color: rgba(255, 255, 255, 0.8);
+      text-decoration: none;
+      transition: var(--transition);
+      border-left: 4px solid transparent;
+      font-weight: 500;
+    }
+
+    .sidebar a i {
+      margin-right: 12px;
+      font-size: 1.2rem;
+      width: 24px;
+      text-align: center;
+    }
+
+    .sidebar a:hover {
+      background-color: rgba(255, 255, 255, 0.05);
+      color: white;
+      border-left-color: var(--primary-light);
+    }
+
+    .sidebar a.active {
+      background-color: rgba(67, 97, 238, 0.2);
+      color: white;
+      border-left-color: var(--primary);
+    }
+
+    /* Content Styles */
+    .content {
+      flex: 1;
+      margin-left: var(--sidebar-width);
+      padding: 2rem;
+      transition: var(--transition);
+    }
+
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 2rem;
+      padding-bottom: 1rem;
+      border-bottom: 1px solid var(--gray-light);
+    }
+
+    header h1 {
+      font-size: 1.8rem;
+      font-weight: 700;
+      color: var(--dark);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    header h1 i {
+      color: var(--primary);
+    }
+
+    .user-profile {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 0.5rem 1rem;
+      background: white;
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      cursor: pointer;
+    }
+
+    .user-profile img {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      object-fit: cover;
+    }
+
+    /* Stats Cards */
+    .stats-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 1.5rem;
+      margin-bottom: 2rem;
+    }
+
+    .stat-card {
+      background: white;
+      border-radius: var(--radius);
+      padding: 1.5rem;
+      box-shadow: var(--shadow);
+      transition: var(--transition);
+      border-left: 4px solid var(--primary);
+    }
+
+    .stat-card:hover {
+      transform: translateY(-5px);
+      box-shadow: var(--shadow-lg);
+    }
+
+    .stat-card.orange {
+      border-left-color: var(--warning);
+    }
+
+    .stat-card.green {
+      border-left-color: #4ade80;
+    }
+
+    .stat-card.purple {
+      border-left-color: #a855f7;
+    }
+
+    .stat-card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+    }
+
+    .stat-card-title {
+      font-size: 0.9rem;
+      color: var(--gray);
+      font-weight: 500;
+    }
+
+    .stat-card-icon {
+      width: 50px;
+      height: 50px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 1.5rem;
+    }
+
+    .stat-card-icon.blue {
+      background: linear-gradient(135deg, var(--primary), var(--primary-light));
+    }
+
+    .stat-card-icon.orange {
+      background: linear-gradient(135deg, var(--warning), #f9a826);
+    }
+
+    .stat-card-icon.green {
+      background: linear-gradient(135deg, #4ade80, #22c55e);
+    }
+
+    .stat-card-icon.purple {
+      background: linear-gradient(135deg, #a855f7, #8b5cf6);
+    }
+
+    .stat-card-value {
+      font-size: 2rem;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+    }
+
+    .stat-card-change {
+      font-size: 0.85rem;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .stat-card-change.positive {
+      color: #22c55e;
+    }
+
+    .stat-card-change.negative {
+      color: var(--danger);
+    }
+
+    /* Main Card */
+    .main-card {
+      background: white;
+      border-radius: var(--radius);
+      padding: 1.5rem;
+      box-shadow: var(--shadow);
+      margin-bottom: 2rem;
+    }
+
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.5rem;
+    }
+
+    .card-title {
+      font-size: 1.5rem;
+      font-weight: 600;
+      color: var(--dark);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .card-title i {
+      color: var(--primary);
+    }
+
+    .card-actions {
+      display: flex;
+      gap: 10px;
+    }
+
+    /* Buttons */
+    .btn {
+      padding: 0.7rem 1.2rem;
+      border-radius: 8px;
+      font-weight: 500;
+      border: none;
+      cursor: pointer;
+      transition: var(--transition);
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      text-decoration: none;
+      font-size: 0.9rem;
+    }
+
+    .btn-primary {
+      background-color: var(--primary);
+      color: white;
+    }
+
+    .btn-primary:hover {
+      background-color: var(--secondary);
+      transform: translateY(-2px);
+      box-shadow: var(--shadow);
+    }
+
+    .btn-success {
+      background-color: #22c55e;
+      color: white;
+    }
+
+    .btn-success:hover {
+      background-color: #16a34a;
+      transform: translateY(-2px);
+      box-shadow: var(--shadow);
+    }
+
+    .btn-warning {
+      background-color: var(--warning);
+      color: white;
+    }
+
+    .btn-warning:hover {
+      background-color: #e07c0c;
+      transform: translateY(-2px);
+    }
+
+    .btn-danger {
+      background-color: var(--danger);
+      color: white;
+    }
+
+    .btn-danger:hover {
+      background-color: #e1146e;
+      transform: translateY(-2px);
+    }
+
+    .btn-sm {
+      padding: 0.5rem 0.8rem;
+      font-size: 0.8rem;
+    }
+
+    /* Table */
+    .table-container {
+      overflow-x: auto;
+      border-radius: var(--radius);
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+      margin-bottom: 1.5rem;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background: white;
+    }
+
+    thead {
+      background: linear-gradient(135deg, var(--primary), var(--primary-light));
+      color: white;
+    }
+
+    th {
+      padding: 15px 12px;
+      text-align: center;
+      font-weight: 600;
+      position: relative;
+    }
+
+    th:not(:last-child)::after {
+      content: '';
+      position: absolute;
+      right: 0;
+      top: 50%;
+      transform: translateY(-50%);
+      height: 60%;
+      width: 1px;
+      background: rgba(255, 255, 255, 0.2);
+    }
+
+    td {
+      padding: 12px;
+      border-bottom: 1px solid #e2e8f0;
+      text-align: center;
+    }
+
+    tbody tr {
+      transition: background-color 0.2s ease;
+    }
+
+    tbody tr:hover {
+      background-color: #f7fafc;
+    }
+
+    .total-row {
+      background: #f8f9fa;
+      font-weight: bold;
+    }
+
+    /* Search and Filter */
+    .search-filter {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 20px;
+      gap: 15px;
+      flex-wrap: wrap;
+    }
+
+    .search-box {
+      flex: 1;
+      min-width: 300px;
+      position: relative;
+    }
+
+    .search-box input {
+      width: 100%;
+      padding: 12px 20px 12px 45px;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      font-size: 1rem;
+      transition: var(--transition);
+    }
+
+    .search-box input:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.1);
+    }
+
+    .search-icon {
+      position: absolute;
+      left: 15px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #a0aec0;
+    }
+
+    .filter-box {
+      display: flex;
+      gap: 10px;
+    }
+
+    .filter-box select {
+      padding: 12px 15px;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      background: white;
+      font-size: 1rem;
+      cursor: pointer;
+    }
+
+    /* Alert */
+    .alert {
+      padding: 1rem 1.5rem;
+      border-radius: 8px;
+      margin-bottom: 1.5rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-left: 4px solid;
+      animation: fadeIn 0.5s ease;
+    }
+
+    .alert-success {
+      background-color: rgba(34, 197, 94, 0.1);
+      border-left-color: #22c55e;
+      color: #166534;
+    }
+
+    .alert-danger {
+      background-color: rgba(247, 37, 133, 0.1);
+      border-left-color: var(--danger);
+      color: #9f1239;
+    }
+
+    .alert-close {
+      background: none;
+      border: none;
+      font-size: 1.2rem;
+      cursor: pointer;
+      color: inherit;
+    }
+
+    /* Empty State */
+    .empty-state {
+      text-align: center;
+      padding: 3rem 2rem;
+      color: var(--gray);
+    }
+
+    .empty-state i {
+      font-size: 4rem;
+      margin-bottom: 1rem;
+      color: var(--gray-light);
+    }
+
+    .empty-state h3 {
+      font-size: 1.5rem;
+      margin-bottom: 0.5rem;
+    }
+
+    /* Animations */
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes modalFadeIn {
+      from { opacity: 0; transform: scale(0.9); }
+      to { opacity: 1; transform: scale(1); }
+    }
+
+    /* Footer */
+    footer {
+      text-align: center;
+      padding: 1.5rem;
+      margin-top: 2rem;
+      border-top: 1px solid var(--gray-light);
+      color: var(--gray);
+      font-size: 0.9rem;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .sidebar {
+        width: 70px;
+        overflow: visible;
+      }
+
+      .sidebar .logo-container {
+        padding: 1rem 0.5rem;
+        flex-direction: column;
+      }
+
+      .sidebar h2, .sidebar a span {
+        display: none;
+      }
+
+      .sidebar a {
+        justify-content: center;
+        padding: 1rem;
+        border-left: none;
+        border-bottom: 4px solid transparent;
+      }
+
+      .sidebar a.active {
+        border-left: none;
+        border-bottom-color: var(--primary);
+      }
+
+      .content {
+        margin-left: 70px;
+        padding: 1rem;
+      }
+
+      .stats-container {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .search-filter {
+        flex-direction: column;
+      }
+      
+      .search-box {
+        min-width: 100%;
+      }
+      
+      th, td {
+        padding: 10px 8px;
+        font-size: 0.9rem;
+      }
+    }
+
+    @media (max-width: 576px) {
+      .stats-container {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Sidebar -->
+  <div class="sidebar">
+    <div class="logo-container">
+      <img src="logo1.png" alt="Logo 1">
+      <img src="logo2.png" alt="Logo 2">
+    </div>
+    <h2>Menu</h2>
+    <a href="index.html"><i class="fas fa-home"></i> <span>Dashboard</span></a>
+    <a href="orang_asing.html"><i class="fas fa-users"></i> <span>Data Orang Asing</span></a>
+    <a href="tindakan.html"><i class="fas fa-gavel"></i> <span>Tindakan</span></a>
+    <a href="rekap.html" class="active"><i class="fas fa-chart-bar"></i> <span>Rekapitulasi</span></a>
+  </div>
+
+  <!-- Content -->
+  <div class="content">
+    <header>
+      <h1><i class="fas fa-chart-bar"></i> Rekapitulasi Tindakan Administratif</h1>
+      <div class="user-profile">
+        <img src="https://ui-avatars.com/api/?name=Admin+User&background=4361ee&color=fff" alt="User">
+        <div>
+          <div class="user-name">Admin User</div>
+          <div class="user-role">Petugas Keimigrasian</div>
+        </div>
+      </div>
+    </header>
+
+    <!-- Stats Cards -->
+    <div class="stats-container">
+      <div class="stat-card">
+        <div class="stat-card-header">
+          <div class="stat-card-title">Total Tindakan</div>
+          <div class="stat-card-icon blue">
+            <i class="fas fa-chart-line"></i>
+          </div>
+        </div>
+        <div class="stat-card-value" id="total-actions">0</div>
+        <div class="stat-card-change positive">
+          <i class="fas fa-arrow-up"></i> Data tersimpan lokal
+        </div>
+      </div>
+      
+      <div class="stat-card orange">
+        <div class="stat-card-header">
+          <div class="stat-card-title">Deportasi</div>
+          <div class="stat-card-icon orange">
+            <i class="fas fa-plane-departure"></i>
+          </div>
+        </div>
+        <div class="stat-card-value" id="deportation-actions">0</div>
+        <div class="stat-card-change positive">
+          <i class="fas fa-exclamation-circle"></i> Tindakan tegas
+        </div>
+      </div>
+      
+      <div class="stat-card green">
+        <div class="stat-card-header">
+          <div class="stat-card-title">Bulan Ini</div>
+          <div class="stat-card-icon green">
+            <i class="fas fa-calendar-alt"></i>
+          </div>
+        </div>
+        <div class="stat-card-value" id="monthly-actions">0</div>
+        <div class="stat-card-change positive">
+          <i class="fas fa-chart-line"></i> Aktivitas terkini
+        </div>
+      </div>
+    </div>
+
+    <!-- Main Card -->
+    <div class="main-card">
+      <div class="card-header">
+        <div class="card-title">
+          <i class="fas fa-list"></i> Rekapitulasi Tindakan Administratif Keimigrasian
+        </div>
+        <div class="card-actions">
+          <button class="btn btn-success" onclick="exportTableToExcel('rekapTable','Rekapitulasi_2025')">
+            <i class="fas fa-download"></i> Ekspor ke Excel
+          </button>
+        </div>
+      </div>
+
+      <!-- Alert Notification -->
+      <div class="alert alert-success" id="notification" style="display: none;">
+        <span id="notification-text">Data berhasil diperbarui</span>
+        <button class="alert-close" id="notification-close">×</button>
+      </div>
+
+      <!-- Filter Tahun -->
+      <div class="search-filter">
+        <div class="filter-box">
+          <select name="tahun" class="form-select" id="year-filter">
+            <option value="2025" selected>2025</option>
+            <option value="2024">2024</option>
+            <option value="2023">2023</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Table Container -->
+      <div class="table-container">
+        <table id="rekapTable">
+          <thead>
+            <tr>
+              <th>Bulan</th>
+              <th>Pendetensian</th>
+              <th>Biaya Beban</th>
+              <th>Larangan Berada di Suatu Tempat</th>
+              <th>Pembatalan Izin Tinggal</th>
+              <th>Deportasi</th>
+              <th>Cegah/Tangkal</th>
+              <th>TOTAL</th>
+            </tr>
+          </thead>
+          <tbody id="rekap-table-body">
+            <!-- Data akan diisi oleh JavaScript -->
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Empty State -->
+      <div class="empty-state" id="empty-state">
+        <i class="fas fa-chart-bar"></i>
+        <h3>Belum ada data rekapitulasi</h3>
+        <p>Data akan muncul setelah ada tindakan administratif yang tercatat.</p>
+      </div>
+
+      <!-- Tombol Kembali -->
+      <div class="text-center mt-3">
+        <a href="index.html" class="btn btn-secondary">
+          <i class="fas fa-arrow-left"></i> Kembali ke Menu Utama
+        </a>
+      </div>
+    </div>
+
+    <footer>
+      <p>© 2025 Sistem Informasi TAK - Direktorat Jenderal Imigrasi</p>
+    </footer>
+  </div>
+
+  <script>
+    // Data management functions
+    function initializeData() {
+      if (!localStorage.getItem('rekapData')) {
+        // Inisialisasi data rekap default jika belum ada
+        const defaultData = {
+          "2025": {
+            "Januari": { pendetensian: 0, biayaBeban: 0, larangan: 0, pembatalan: 0, deportasi: 0, cegahTangkal: 0 },
+            "Februari": { pendetensian: 0, biayaBeban: 0, larangan: 0, pembatalan: 0, deportasi: 0, cegahTangkal: 0 },
+            "Maret": { pendetensian: 0, biayaBeban: 0, larangan: 0, pembatalan: 0, deportasi: 0, cegahTangkal: 0 },
+            "April": { pendetensian: 0, biayaBeban: 0, larangan: 0, pembatalan: 0, deportasi: 0, cegahTangkal: 0 },
+            "Mei": { pendetensian: 0, biayaBeban: 0, larangan: 0, pembatalan: 0, deportasi: 0, cegahTangkal: 0 },
+            "Juni": { pendetensian: 0, biayaBeban: 0, larangan: 0, pembatalan: 0, deportasi: 0, cegahTangkal: 0 },
+            "Juli": { pendetensian: 0, biayaBeban: 0, larangan: 0, pembatalan: 0, deportasi: 0, cegahTangkal: 0 },
+            "Agustus": { pendetensian: 0, biayaBeban: 0, larangan: 0, pembatalan: 0, deportasi: 0, cegahTangkal: 0 },
+            "September": { pendetensian: 0, biayaBeban: 0, larangan: 0, pembatalan: 0, deportasi: 0, cegahTangkal: 0 },
+            "Oktober": { pendetensian: 0, biayaBeban: 0, larangan: 0, pembatalan: 0, deportasi: 0, cegahTangkal: 0 },
+            "November": { pendetensian: 0, biayaBeban: 0, larangan: 0, pembatalan: 0, deportasi: 0, cegahTangkal: 0 },
+            "Desember": { pendetensian: 0, biayaBeban: 0, larangan: 0, pembatalan: 0, deportasi: 0, cegahTangkal: 0 }
+          }
+        };
+        localStorage.setItem('rekapData', JSON.stringify(defaultData));
+      }
+    }
+
+    function getRekapData() {
+      return JSON.parse(localStorage.getItem('rekapData')) || {};
+    }
+
+    function saveRekapData(data) {
+      localStorage.setItem('rekapData', JSON.stringify(data));
+    }
+
+    // Ambil data tindakan dari localStorage
+    function getActionsData() {
+      return JSON.parse(localStorage.getItem('administrativeActions')) || [];
+    }
+
+    function updateStats() {
+      const actionsData = getActionsData();
+      const totalActions = actionsData.length;
+      
+      // Hitung jumlah deportasi
+      const deportationActions = actionsData.filter(action => 
+        action.actionType === 'Deportasi dari Wilayah Indonesia'
+      ).length;
+      
+      // Hitung jumlah tindakan bulan ini
+      const currentMonth = new Date().getMonth() + 1;
+      const currentYear = new Date().getFullYear();
+      const monthlyActions = actionsData.filter(action => {
+        const actionDate = new Date(action.actionDate);
+        return actionDate.getMonth() + 1 === currentMonth && actionDate.getFullYear() === currentYear;
+      }).length;
+      
+      document.getElementById('total-actions').textContent = totalActions;
+      document.getElementById('deportation-actions').textContent = deportationActions;
+      document.getElementById('monthly-actions').textContent = monthlyActions;
+    }
+
+    // Fungsi untuk mengelompokkan data tindakan ke dalam rekap
+    function generateRekapData() {
+      const actionsData = getActionsData();
+      const rekapData = getRekapData();
+
+      // Helper: return a fresh month data structure
+      function initMonthData() {
+        return {
+          pendetensian: 0,
+          biayaBeban: 0,
+          larangan: 0,
+          pembatalan: 0,
+          deportasi: 0,
+          cegahTangkal: 0
+        };
+      }
+
+      // List of month names to use for indexing
+      const monthNames = [
+        "Januari", "Februari", "Maret", "April", "Mei", "Juni",
+        "Juli", "Agustus", "September", "Oktober", "November", "Desember"
+      ];
+
+      // Determine all years present in actionsData
+      const yearsInActions = new Set();
+      actionsData.forEach(action => {
+        const actionDate = new Date(action.actionDate);
+        if (!isNaN(actionDate.getTime())) {
+          yearsInActions.add(actionDate.getFullYear().toString());
+        }
+      });
+
+      // Also include existing years in rekapData so we don't lose data for years with no actions
+      Object.keys(rekapData).forEach(year => yearsInActions.add(year));
+
+      // Initialize and reset month data for each relevant year
+      yearsInActions.forEach(year => {
+        if (!rekapData[year]) {
+          rekapData[year] = {};
+        }
+        monthNames.forEach(month => {
+          rekapData[year][month] = initMonthData();
+        });
+      });
+
+      // Accumulate actions per year/month
+      actionsData.forEach(action => {
+        const actionDate = new Date(action.actionDate);
+        if (isNaN(actionDate.getTime())) return;
+        const actionYear = actionDate.getFullYear().toString();
+        const actionMonthIndex = actionDate.getMonth();
+        const monthName = monthNames[actionMonthIndex];
+        // Ensure the month data exists (should be since we initialized above)
+        const monthData = rekapData[actionYear][monthName];
+        switch(action.actionType) {
+          case "Pendetensian":
+            monthData.pendetensian++;
+            break;
+          case "Pengenaan biaya beban":
+            monthData.biayaBeban++;
+            break;
+          case "Larangan berada di wilayah tertentu":
+            monthData.larangan++;
+            break;
+          case "Pembatalan izin tinggal":
+            monthData.pembatalan++;
+            break;
+          case "Deportasi dari Wilayah Indonesia":
+            monthData.deportasi++;
+            break;
+          case "Pencegahan":
+          case "Penangkalan":
+            monthData.cegahTangkal++;
+            break;
+        }
+      });
+
+      saveRekapData(rekapData);
+      return rekapData;
+    }
+
+    function renderTable() {
+      const tableBody = document.getElementById('rekap-table-body');
+      const emptyState = document.getElementById('empty-state');
+      const selectedYear = document.getElementById('year-filter').value;
+      const rekapData = generateRekapData();
+      
+      // Show/hide empty state
+      if (!rekapData[selectedYear]) {
+        tableBody.innerHTML = '';
+        emptyState.style.display = 'block';
+        return;
+      } else {
+        emptyState.style.display = 'none';
+      }
+      
+      tableBody.innerHTML = '';
+      
+      const monthNames = [
+        "Januari", "Februari", "Maret", "April", "Mei", "Juni",
+        "Juli", "Agustus", "September", "Oktober", "November", "Desember"
+      ];
+      
+      let totalPendetensian = 0;
+      let totalBiayaBeban = 0;
+      let totalLarangan = 0;
+      let totalPembatalan = 0;
+      let totalDeportasi = 0;
+      let totalCegahTangkal = 0;
+      let totalAll = 0;
+      
+      monthNames.forEach(month => {
+        const monthData = rekapData[selectedYear][month];
+        const monthTotal = monthData.pendetensian + monthData.biayaBeban + monthData.larangan + 
+                          monthData.pembatalan + monthData.deportasi + monthData.cegahTangkal;
+        
+        const row = document.createElement('tr');
+        row.innerHTML = `
+          <td>${month}</td>
+          <td>${monthData.pendetensian}</td>
+          <td>${monthData.biayaBeban}</td>
+          <td>${monthData.larangan}</td>
+          <td>${monthData.pembatalan}</td>
+          <td>${monthData.deportasi}</td>
+          <td>${monthData.cegahTangkal}</td>
+          <td>${monthTotal}</td>
+        `;
+        tableBody.appendChild(row);
+        
+        // Hitung total
+        totalPendetensian += monthData.pendetensian;
+        totalBiayaBeban += monthData.biayaBeban;
+        totalLarangan += monthData.larangan;
+        totalPembatalan += monthData.pembatalan;
+        totalDeportasi += monthData.deportasi;
+        totalCegahTangkal += monthData.cegahTangkal;
+        totalAll += monthTotal;
+      });
+      
+      // Tambah baris total
+      const totalRow = document.createElement('tr');
+      totalRow.className = 'total-row';
+      totalRow.innerHTML = `
+        <td>TOTAL</td>
+        <td>${totalPendetensian}</td>
+        <td>${totalBiayaBeban}</td>
+        <td>${totalLarangan}</td>
+        <td>${totalPembatalan}</td>
+        <td>${totalDeportasi}</td>
+        <td>${totalCegahTangkal}</td>
+        <td>${totalAll}</td>
+      `;
+      tableBody.appendChild(totalRow);
+    }
+
+    // Populate the year dropdown based on available data in localStorage
+    function populateYearFilter() {
+      const yearFilter = document.getElementById('year-filter');
+      if (!yearFilter) return;
+      const rekapData = getRekapData();
+      const years = Object.keys(rekapData).sort((a, b) => b.localeCompare(a));
+      yearFilter.innerHTML = '';
+      years.forEach(year => {
+        const option = document.createElement('option');
+        option.value = year;
+        option.textContent = year;
+        yearFilter.appendChild(option);
+      });
+      const currentYear = new Date().getFullYear().toString();
+      if (years.includes(currentYear)) {
+        yearFilter.value = currentYear;
+      } else if (years.length > 0) {
+        yearFilter.value = years[0];
+      }
+    }
+
+    function showNotification(message, type = 'success') {
+      const notification = document.getElementById('notification');
+      const notificationText = document.getElementById('notification-text');
+      
+      notificationText.innerHTML = message;
+      notification.className = `alert alert-${type}`;
+      notification.style.display = 'flex';
+      
+      // Auto hide after 5 seconds
+      setTimeout(() => {
+        notification.style.display = 'none';
+      }, 5000);
+    }
+
+    function exportTableToExcel(tableID, filename = ''){
+        let dataType = 'application/vnd.ms-excel';
+        let tableSelect = document.getElementById(tableID);
+        let tableHTML = tableSelect.outerHTML.replace(/ /g, '%20');
+
+        filename = filename?filename+'.xls':'excel_data.xls';
+
+        let downloadLink = document.createElement("a");
+        document.body.appendChild(downloadLink);
+
+        if(navigator.msSaveOrOpenBlob){
+            let blob = new Blob(['\ufeff', tableHTML], { type: dataType });
+            navigator.msSaveOrOpenBlob(blob, filename);
+        } else {
+            downloadLink.href = 'data:' + dataType + ', ' + tableHTML;
+            downloadLink.download = filename;
+            downloadLink.click();
+        }
+    }
+
+    // Initialize when page loads
+    document.addEventListener('DOMContentLoaded', function() {
+      initializeData();
+      // Ensure rekap data reflects all years before populating filter
+      generateRekapData();
+      populateYearFilter();
+      updateStats();
+      renderTable();
+
+      // Event listeners
+      document.getElementById('year-filter').addEventListener('change', function() {
+        renderTable();
+        showNotification(`Data rekapitulasi tahun ${this.value} berhasil dimuat`, 'success');
+      });
+      
+      document.getElementById('notification-close').addEventListener('click', function() {
+        document.getElementById('notification').style.display = 'none';
+      });
+    });
+  </script>
+</body>
+</html>

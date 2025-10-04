@@ -1,0 +1,136 @@
+<?php
+/**
+ * =====================================================
+ * Tambah Data Tindakan
+ * Sistem Informasi Tindakan Administratif Keimigrasian
+ * =====================================================
+ */
+include 'config.php';
+
+// ==================== 1. AMBIL DATA ORANG ASING UNTUK DROPDOWN ====================
+$orang = mysqli_query($conn, "SELECT * FROM orang_asing ORDER BY nama ASC");
+
+// ==================== 2. PROSES SIMPAN DATA ====================
+if (isset($_POST['submit'])) {
+    $orang_asing_id   = intval($_POST['orang_asing_id']);
+    $tanggal_tindakan = mysqli_real_escape_string($conn, $_POST['tanggal_tindakan']);
+    $alasan           = mysqli_real_escape_string($conn, $_POST['alasan']);
+    $izin_tinggal     = mysqli_real_escape_string($conn, $_POST['izin_tinggal']);
+    $pasal_75         = mysqli_real_escape_string($conn, $_POST['pasal_75']);
+    $keterangan       = mysqli_real_escape_string($conn, $_POST['keterangan']);
+
+    // ✅ ambil jenis tindakan (multi select)
+    $jenis_tindakan = isset($_POST['jenis_tindakan']) ? implode(",", $_POST['jenis_tindakan']) : '';
+
+    // Validasi sederhana
+    if (empty($orang_asing_id) || empty($jenis_tindakan) || empty($tanggal_tindakan)) {
+        $error = "Semua field wajib diisi!";
+    } else {
+        $insert = mysqli_query($conn, "INSERT INTO tindakan 
+            (orang_asing_id, jenis_tindakan, tanggal_tindakan, alasan, pasal_75, izin_tinggal, keterangan) 
+            VALUES ('$orang_asing_id', '$jenis_tindakan', '$tanggal_tindakan', '$alasan', '$pasal_75', '$izin_tinggal', '$keterangan')");
+
+        if ($insert) {
+            header("Location: tindakan.php?pesan=added");
+            exit;
+        } else {
+            $error = "Gagal menambahkan tindakan: " . mysqli_error($conn);
+        }
+    }
+}
+?>
+
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <title>Tambah Tindakan</title>
+    <!-- Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Include global styles for a modern look -->
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="bg-light">
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-7">
+            <div class="card shadow">
+                <div class="card-header bg-success text-white">
+                    <h4>Tambah Data Tindakan</h4>
+                </div>
+                <div class="card-body">
+                    
+                    <!-- Notifikasi Error -->
+                    <?php if (!empty($error)): ?>
+                        <div class="alert alert-danger alert-dismissible fade show">
+                            <?= $error; ?>
+                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                        </div>
+                    <?php endif; ?>
+
+                    <!-- Form Tambah -->
+                    <form method="POST">
+                        <div class="mb-3">
+                            <label class="form-label">Nama Orang Asing</label>
+                            <select name="orang_asing_id" class="form-control" required>
+                                <option value="">-- Pilih Orang Asing --</option>
+                                <?php while ($o = mysqli_fetch_assoc($orang)) { ?>
+                                    <option value="<?= $o['id']; ?>">
+                                        <?= $o['nama']; ?> (<?= $o['paspor']; ?>)
+                                    </option>
+                                <?php } ?>
+                            </select>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Jenis Tindakan (bisa pilih lebih dari satu)</label>
+                            <select name="jenis_tindakan[]" class="form-control" multiple required>
+                                <option value="A">Pencatuman dalam daftar pencegahan atau penangkalan</option>
+                                <option value="B">Pembatasan, perubahan, atau pembatalan izin tinggal</option>
+                                <option value="C">Larangan untuk berada di satu atau beberapa tempat tertentu di Wilayah Indonesia</option>
+                                <option value="D">Keharusan untuk bertempat tinggal di suatu tempat tertentu di Wilayah Indonesia</option>
+                                <option value="E">Pengenaan biaya beban</option>
+                                <option value="F">Deportasi dari Wilayah Indonesia</option>
+                            </select>
+                            <small class="text-muted">Tahan tombol <b>CTRL</b> (atau <b>Cmd</b> di Mac) untuk pilih lebih dari satu.</small>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Tanggal Tindakan</label>
+                            <input type="date" name="tanggal_tindakan" class="form-control" required>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Izin Tinggal</label>
+                            <input type="text" name="izin_tinggal" class="form-control" placeholder="Contoh: ITAS / ITAP / -">
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Alasan</label>
+                            <textarea name="alasan" class="form-control" rows="3" placeholder="Tambahkan alasan pelanggaran"></textarea>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Pasal 75</label>
+                            <input type="text" name="pasal_75" class="form-control" placeholder="Contoh: A,B,E">
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Keterangan</label>
+                            <textarea name="keterangan" class="form-control" rows="2" placeholder="Masukkan keterangan tambahan"></textarea>
+                        </div>
+
+                        <button type="submit" name="submit" class="btn btn-success">Simpan</button>
+                        <a href="tindakan.php" class="btn btn-secondary">← Kembali</a>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

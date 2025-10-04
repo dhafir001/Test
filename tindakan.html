@@ -1,0 +1,1259 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Data Tindakan - Sistem Informasi TAK</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #4361ee;
+      --primary-light: #4895ef;
+      --secondary: #3f37c9;
+      --success: #4cc9f0;
+      --danger: #f72585;
+      --warning: #f8961e;
+      --info: #4895ef;
+      --dark: #1e1e2d;
+      --light: #f8f9fa;
+      --gray: #6c757d;
+      --gray-light: #e9ecef;
+      --sidebar-width: 260px;
+      --header-height: 70px;
+      --transition: all 0.3s ease;
+      --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.1);
+      --radius: 12px;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: #f5f7fb;
+      color: #333;
+      line-height: 1.6;
+      display: flex;
+      min-height: 100vh;
+    }
+
+    /* Sidebar Styles */
+    .sidebar {
+      width: var(--sidebar-width);
+      background: linear-gradient(180deg, var(--dark) 0%, #2d2d44 100%);
+      color: white;
+      height: 100vh;
+      position: fixed;
+      overflow-y: auto;
+      transition: var(--transition);
+      z-index: 1000;
+      box-shadow: var(--shadow-lg);
+    }
+
+    .logo-container {
+      padding: 1.5rem 1rem;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 1rem;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .logo-container img {
+      max-height: 50px;
+      max-width: 100px;
+      object-fit: contain;
+    }
+
+    .sidebar h2 {
+      font-size: 0.9rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      padding: 1.5rem 1.5rem 0.5rem;
+      color: rgba(255, 255, 255, 0.6);
+    }
+
+    .sidebar a {
+      display: flex;
+      align-items: center;
+      padding: 0.9rem 1.5rem;
+      color: rgba(255, 255, 255, 0.8);
+      text-decoration: none;
+      transition: var(--transition);
+      border-left: 4px solid transparent;
+      font-weight: 500;
+    }
+
+    .sidebar a i {
+      margin-right: 12px;
+      font-size: 1.2rem;
+      width: 24px;
+      text-align: center;
+    }
+
+    .sidebar a:hover {
+      background-color: rgba(255, 255, 255, 0.05);
+      color: white;
+      border-left-color: var(--primary-light);
+    }
+
+    .sidebar a.active {
+      background-color: rgba(67, 97, 238, 0.2);
+      color: white;
+      border-left-color: var(--primary);
+    }
+
+    /* Content Styles */
+    .content {
+      flex: 1;
+      margin-left: var(--sidebar-width);
+      padding: 2rem;
+      transition: var(--transition);
+    }
+
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 2rem;
+      padding-bottom: 1rem;
+      border-bottom: 1px solid var(--gray-light);
+    }
+
+    header h1 {
+      font-size: 1.8rem;
+      font-weight: 700;
+      color: var(--dark);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    header h1 i {
+      color: var(--primary);
+    }
+
+    .user-profile {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 0.5rem 1rem;
+      background: white;
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      cursor: pointer;
+    }
+
+    .user-profile img {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      object-fit: cover;
+    }
+
+    /* Stats Cards */
+    .stats-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 1.5rem;
+      margin-bottom: 2rem;
+    }
+
+    .stat-card {
+      background: white;
+      border-radius: var(--radius);
+      padding: 1.5rem;
+      box-shadow: var(--shadow);
+      transition: var(--transition);
+      border-left: 4px solid var(--primary);
+    }
+
+    .stat-card:hover {
+      transform: translateY(-5px);
+      box-shadow: var(--shadow-lg);
+    }
+
+    .stat-card.orange {
+      border-left-color: var(--warning);
+    }
+
+    .stat-card.green {
+      border-left-color: #4ade80;
+    }
+
+    .stat-card.purple {
+      border-left-color: #a855f7;
+    }
+
+    .stat-card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+    }
+
+    .stat-card-title {
+      font-size: 0.9rem;
+      color: var(--gray);
+      font-weight: 500;
+    }
+
+    .stat-card-icon {
+      width: 50px;
+      height: 50px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 1.5rem;
+    }
+
+    .stat-card-icon.blue {
+      background: linear-gradient(135deg, var(--primary), var(--primary-light));
+    }
+
+    .stat-card-icon.orange {
+      background: linear-gradient(135deg, var(--warning), #f9a826);
+    }
+
+    .stat-card-icon.green {
+      background: linear-gradient(135deg, #4ade80, #22c55e);
+    }
+
+    .stat-card-icon.purple {
+      background: linear-gradient(135deg, #a855f7, #8b5cf6);
+    }
+
+    .stat-card-value {
+      font-size: 2rem;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+    }
+
+    .stat-card-change {
+      font-size: 0.85rem;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .stat-card-change.positive {
+      color: #22c55e;
+    }
+
+    .stat-card-change.negative {
+      color: var(--danger);
+    }
+
+    /* Main Card */
+    .main-card {
+      background: white;
+      border-radius: var(--radius);
+      padding: 1.5rem;
+      box-shadow: var(--shadow);
+      margin-bottom: 2rem;
+    }
+
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.5rem;
+    }
+
+    .card-title {
+      font-size: 1.5rem;
+      font-weight: 600;
+      color: var(--dark);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .card-title i {
+      color: var(--primary);
+    }
+
+    .card-actions {
+      display: flex;
+      gap: 10px;
+    }
+
+    /* Buttons */
+    .btn {
+      padding: 0.7rem 1.2rem;
+      border-radius: 8px;
+      font-weight: 500;
+      border: none;
+      cursor: pointer;
+      transition: var(--transition);
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      text-decoration: none;
+      font-size: 0.9rem;
+    }
+
+    .btn-primary {
+      background-color: var(--primary);
+      color: white;
+    }
+
+    .btn-primary:hover {
+      background-color: var(--secondary);
+      transform: translateY(-2px);
+      box-shadow: var(--shadow);
+    }
+
+    .btn-success {
+      background-color: #22c55e;
+      color: white;
+    }
+
+    .btn-success:hover {
+      background-color: #16a34a;
+      transform: translateY(-2px);
+      box-shadow: var(--shadow);
+    }
+
+    .btn-warning {
+      background-color: var(--warning);
+      color: white;
+    }
+
+    .btn-warning:hover {
+      background-color: #e07c0c;
+      transform: translateY(-2px);
+    }
+
+    .btn-danger {
+      background-color: var(--danger);
+      color: white;
+    }
+
+    .btn-danger:hover {
+      background-color: #e1146e;
+      transform: translateY(-2px);
+    }
+
+    .btn-sm {
+      padding: 0.5rem 0.8rem;
+      font-size: 0.8rem;
+    }
+
+    /* Table */
+    .table-container {
+      overflow-x: auto;
+      border-radius: var(--radius);
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+      margin-bottom: 1.5rem;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background: white;
+    }
+
+    thead {
+      background: linear-gradient(135deg, var(--primary), var(--primary-light));
+      color: white;
+    }
+
+    th {
+      padding: 15px 12px;
+      text-align: left;
+      font-weight: 600;
+      position: relative;
+    }
+
+    th:not(:last-child)::after {
+      content: '';
+      position: absolute;
+      right: 0;
+      top: 50%;
+      transform: translateY(-50%);
+      height: 60%;
+      width: 1px;
+      background: rgba(255, 255, 255, 0.2);
+    }
+
+    td {
+      padding: 12px;
+      border-bottom: 1px solid #e2e8f0;
+    }
+
+    tbody tr {
+      transition: background-color 0.2s ease;
+    }
+
+    tbody tr:hover {
+      background-color: #f7fafc;
+    }
+
+    .action-buttons {
+      display: flex;
+      gap: 8px;
+    }
+
+    /* Status Badge */
+    .badge {
+      display: inline-block;
+      padding: 6px 12px;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      font-weight: 600;
+    }
+
+    .badge-success {
+      background-color: rgba(34, 197, 94, 0.1);
+      color: #16a34a;
+    }
+
+    .badge-warning {
+      background-color: rgba(248, 150, 30, 0.1);
+      color: #e07c0c;
+    }
+
+    .badge-danger {
+      background-color: rgba(247, 37, 133, 0.1);
+      color: #e1146e;
+    }
+
+    .badge-info {
+      background-color: rgba(67, 97, 238, 0.1);
+      color: var(--primary);
+    }
+
+    /* Search and Filter */
+    .search-filter {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 20px;
+      gap: 15px;
+      flex-wrap: wrap;
+    }
+
+    .search-box {
+      flex: 1;
+      min-width: 300px;
+      position: relative;
+    }
+
+    .search-box input {
+      width: 100%;
+      padding: 12px 20px 12px 45px;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      font-size: 1rem;
+      transition: var(--transition);
+    }
+
+    .search-box input:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.1);
+    }
+
+    .search-icon {
+      position: absolute;
+      left: 15px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #a0aec0;
+    }
+
+    .filter-box {
+      display: flex;
+      gap: 10px;
+    }
+
+    .filter-box select {
+      padding: 12px 15px;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      background: white;
+      font-size: 1rem;
+      cursor: pointer;
+    }
+
+    /* Modal */
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.5);
+      z-index: 2000;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .modal-content {
+      background: white;
+      border-radius: var(--radius);
+      width: 90%;
+      max-width: 800px;
+      max-height: 90vh;
+      overflow-y: auto;
+      box-shadow: var(--shadow-lg);
+      animation: modalFadeIn 0.3s ease;
+    }
+
+    .modal-header {
+      padding: 1.5rem;
+      border-bottom: 1px solid var(--gray-light);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .modal-title {
+      font-size: 1.3rem;
+      font-weight: 600;
+      color: var(--dark);
+    }
+
+    .modal-close {
+      background: none;
+      border: none;
+      font-size: 1.5rem;
+      cursor: pointer;
+      color: var(--gray);
+    }
+
+    .modal-body {
+      padding: 1.5rem;
+    }
+
+    .modal-footer {
+      padding: 1rem 1.5rem;
+      border-top: 1px solid var(--gray-light);
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+    }
+
+    /* Form */
+    .form-group {
+      margin-bottom: 1.2rem;
+    }
+
+    .form-label {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-weight: 500;
+      color: var(--dark);
+    }
+
+    .form-control {
+      width: 100%;
+      padding: 0.8rem 1rem;
+      border: 1px solid var(--gray-light);
+      border-radius: 8px;
+      font-size: 1rem;
+      transition: var(--transition);
+    }
+
+    .form-control:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.1);
+    }
+
+    .form-row {
+      display: flex;
+      gap: 15px;
+    }
+
+    .form-row .form-group {
+      flex: 1;
+    }
+
+    /* Alert */
+    .alert {
+      padding: 1rem 1.5rem;
+      border-radius: 8px;
+      margin-bottom: 1.5rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-left: 4px solid;
+      animation: fadeIn 0.5s ease;
+    }
+
+    .alert-success {
+      background-color: rgba(34, 197, 94, 0.1);
+      border-left-color: #22c55e;
+      color: #166534;
+    }
+
+    .alert-danger {
+      background-color: rgba(247, 37, 133, 0.1);
+      border-left-color: var(--danger);
+      color: #9f1239;
+    }
+
+    .alert-close {
+      background: none;
+      border: none;
+      font-size: 1.2rem;
+      cursor: pointer;
+      color: inherit;
+    }
+
+    /* Empty State */
+    .empty-state {
+      text-align: center;
+      padding: 3rem 2rem;
+      color: var(--gray);
+    }
+
+    .empty-state i {
+      font-size: 4rem;
+      margin-bottom: 1rem;
+      color: var(--gray-light);
+    }
+
+    .empty-state h3 {
+      font-size: 1.5rem;
+      margin-bottom: 0.5rem;
+    }
+
+    /* Animations */
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes modalFadeIn {
+      from { opacity: 0; transform: scale(0.9); }
+      to { opacity: 1; transform: scale(1); }
+    }
+
+    /* Footer */
+    footer {
+      text-align: center;
+      padding: 1.5rem;
+      margin-top: 2rem;
+      border-top: 1px solid var(--gray-light);
+      color: var(--gray);
+      font-size: 0.9rem;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .sidebar {
+        width: 70px;
+        overflow: visible;
+      }
+
+      .sidebar .logo-container {
+        padding: 1rem 0.5rem;
+        flex-direction: column;
+      }
+
+      .sidebar h2, .sidebar a span {
+        display: none;
+      }
+
+      .sidebar a {
+        justify-content: center;
+        padding: 1rem;
+        border-left: none;
+        border-bottom: 4px solid transparent;
+      }
+
+      .sidebar a.active {
+        border-left: none;
+        border-bottom-color: var(--primary);
+      }
+
+      .content {
+        margin-left: 70px;
+        padding: 1rem;
+      }
+
+      .stats-container {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .search-filter {
+        flex-direction: column;
+      }
+      
+      .search-box {
+        min-width: 100%;
+      }
+      
+      .action-buttons {
+        flex-direction: column;
+      }
+      
+      th, td {
+        padding: 10px 8px;
+        font-size: 0.9rem;
+      }
+
+      .form-row {
+        flex-direction: column;
+        gap: 0;
+      }
+    }
+
+    @media (max-width: 576px) {
+      .stats-container {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Sidebar -->
+  <div class="sidebar">
+    <div class="logo-container">
+      <img src="logo1.png" alt="Logo 1">
+      <img src="logo2.png" alt="Logo 2">
+    </div>
+    <h2>Menu</h2>
+    <a href="index.html"><i class="fas fa-home"></i> <span>Dashboard</span></a>
+    <a href="orang_asing.html"><i class="fas fa-users"></i> <span>Data Orang Asing</span></a>
+    <a href="tindakan.html" class="active"><i class="fas fa-gavel"></i> <span>Tindakan</span></a>
+    <a href="rekap.html"><i class="fas fa-chart-bar"></i> <span>Rekapitulasi</span></a>
+  </div>
+
+  <!-- Content -->
+  <div class="content">
+    <header>
+      <h1><i class="fas fa-gavel"></i> Data Tindakan Administratif</h1>
+      <div class="user-profile">
+        <img src="https://ui-avatars.com/api/?name=Admin+User&background=4361ee&color=fff" alt="User">
+        <div>
+          <div class="user-name">Admin User</div>
+          <div class="user-role">Petugas Keimigrasian</div>
+        </div>
+      </div>
+    </header>
+
+    <!-- Stats Cards -->
+    <div class="stats-container">
+      <div class="stat-card">
+        <div class="stat-card-header">
+          <div class="stat-card-title">Total Tindakan</div>
+          <div class="stat-card-icon blue">
+            <i class="fas fa-file-alt"></i>
+          </div>
+        </div>
+        <div class="stat-card-value" id="total-actions">0</div>
+        <div class="stat-card-change positive">
+          <i class="fas fa-arrow-up"></i> Data tersimpan lokal
+        </div>
+      </div>
+      
+      <div class="stat-card orange">
+        <div class="stat-card-header">
+          <div class="stat-card-title">Deportasi</div>
+          <div class="stat-card-icon orange">
+            <i class="fas fa-plane-departure"></i>
+          </div>
+        </div>
+        <div class="stat-card-value" id="deportation-actions">0</div>
+        <div class="stat-card-change positive">
+          <i class="fas fa-exclamation-circle"></i> Tindakan tegas
+        </div>
+      </div>
+      
+      <div class="stat-card green">
+        <div class="stat-card-header">
+          <div class="stat-card-title">Bulan Ini</div>
+          <div class="stat-card-icon green">
+            <i class="fas fa-calendar-alt"></i>
+          </div>
+        </div>
+        <div class="stat-card-value" id="monthly-actions">0</div>
+        <div class="stat-card-change positive">
+          <i class="fas fa-chart-line"></i> Aktivitas terkini
+        </div>
+      </div>
+    </div>
+
+    <!-- Main Card -->
+    <div class="main-card">
+      <div class="card-header">
+        <div class="card-title">
+          <i class="fas fa-list"></i> Daftar Tindakan Administratif
+        </div>
+        <div class="card-actions">
+          <button class="btn btn-primary" id="add-action-btn">
+            <i class="fas fa-plus"></i> Tambah Tindakan
+          </button>
+        </div>
+      </div>
+
+      <!-- Alert Notification -->
+      <div class="alert alert-success" id="notification" style="display: none;">
+        <span id="notification-text">Data berhasil ditambahkan</span>
+        <button class="alert-close" id="notification-close">×</button>
+      </div>
+
+      <!-- Search and Filter -->
+      <div class="search-filter">
+        <div class="search-box">
+          <span class="search-icon"><i class="fas fa-search"></i></span>
+          <input type="text" id="search-input" placeholder="Cari berdasarkan nama, paspor, atau jenis tindakan...">
+        </div>
+        <div class="filter-box">
+          <select id="type-filter">
+            <option value="">Semua Jenis</option>
+            <option value="Deportasi dari Wilayah Indonesia">Deportasi</option>
+            <option value="Pembatalan izin tinggal">Pembatalan Izin</option>
+            <option value="Pengenaan biaya beban">Biaya Beban</option>
+            <option value="Larangan berada di wilayah tertentu">Larangan Wilayah</option>
+          </select>
+          <select id="month-filter">
+            <option value="">Semua Bulan</option>
+            <option value="1">Januari</option>
+            <option value="2">Februari</option>
+            <option value="3">Maret</option>
+            <option value="4">April</option>
+            <option value="5">Mei</option>
+            <option value="6">Juni</option>
+            <option value="7">Juli</option>
+            <option value="8">Agustus</option>
+            <option value="9">September</option>
+            <option value="10">Oktober</option>
+            <option value="11">November</option>
+            <option value="12">Desember</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Table Container -->
+      <div class="table-container">
+        <table>
+          <thead>
+            <tr>
+              <th width="5%">ID</th>
+              <th width="15%">Nama Orang Asing</th>
+              <th width="10%">Paspor</th>
+              <th width="20%">Jenis Tindakan</th>
+              <th width="10%">Tanggal</th>
+              <th width="10%">Izin Tinggal</th>
+              <th width="15%">Alasan</th>
+              <th width="10%">Pasal 75</th>
+              <th width="15%">Aksi</th>
+            </tr>
+          </thead>
+          <tbody id="actions-table-body">
+            <!-- Data akan diisi oleh JavaScript -->
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Empty State -->
+      <div class="empty-state" id="empty-state">
+        <i class="fas fa-gavel"></i>
+        <h3>Belum ada data tindakan</h3>
+        <p>Mulai dengan menambahkan data tindakan administratif pertama Anda.</p>
+        <button class="btn btn-primary mt-3" id="empty-add-btn">
+          <i class="fas fa-plus"></i> Tambah Tindakan Pertama
+        </button>
+      </div>
+    </div>
+
+    <footer>
+      <p>© 2025 Sistem Informasi TAK - Direktorat Jenderal Imigrasi</p>
+    </footer>
+  </div>
+
+  <!-- Modal Tambah/Edit Data -->
+  <div class="modal" id="action-modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <div class="modal-title" id="modal-title">Tambah Data Tindakan</div>
+        <button class="modal-close" id="modal-close">×</button>
+      </div>
+      <div class="modal-body">
+        <form id="action-form">
+          <input type="hidden" id="action-id">
+          
+          <div class="form-group">
+            <label class="form-label" for="foreigner-select">Pilih Orang Asing *</label>
+            <select class="form-control" id="foreigner-select" required>
+              <option value="">Pilih Orang Asing</option>
+              <!-- Data orang asing akan diisi oleh JavaScript -->
+            </select>
+          </div>
+          
+          <div class="form-group">
+            <label class="form-label" for="action-type">Jenis Tindakan *</label>
+            <select class="form-control" id="action-type" required>
+              <option value="">Pilih Jenis Tindakan</option>
+              <option value="Deportasi dari Wilayah Indonesia">Deportasi dari Wilayah Indonesia</option>
+              <option value="Pembatalan izin tinggal">Pembatalan izin tinggal</option>
+              <option value="Pengenaan biaya beban">Pengenaan biaya beban</option>
+              <option value="Larangan berada di wilayah tertentu">Larangan berada di wilayah tertentu</option>
+              <option value="Pencegahan">Pencegahan</option>
+              <option value="Penangkalan">Penangkalan</option>
+            </select>
+          </div>
+          
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label" for="action-date">Tanggal Tindakan *</label>
+              <input type="date" class="form-control" id="action-date" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="residence-permit">Izin Tinggal</label>
+              <select class="form-control" id="residence-permit">
+                <option value="">Pilih Izin Tinggal</option>
+                <option value="Visa Kunjungan">Visa Kunjungan</option>
+                <option value="Visa Bisnis">Visa Bisnis</option>
+                <option value="ITAS">ITAS</option>
+                <option value="ITAP">ITAP</option>
+                <option value="Dispensi">Dispensi</option>
+              </select>
+            </div>
+          </div>
+          
+          <div class="form-group">
+            <label class="form-label" for="reason">Alasan Tindakan *</label>
+            <textarea class="form-control" id="reason" rows="2" required></textarea>
+          </div>
+          
+          <div class="form-group">
+            <label class="form-label" for="article">Pasal 75 *</label>
+            <select class="form-control" id="article" required>
+              <option value="">Pilih Pasal 75</option>
+              <option value="Pasal 75 ayat (1)">Pasal 75 ayat (1)</option>
+              <option value="Pasal 75 ayat (2)">Pasal 75 ayat (2)</option>
+              <option value="Pasal 75 ayat (3)">Pasal 75 ayat (3)</option>
+              <option value="Pasal 75 ayat (4)">Pasal 75 ayat (4)</option>
+              <option value="Pasal 75 ayat (5)">Pasal 75 ayat (5)</option>
+            </select>
+          </div>
+          
+          <div class="form-group">
+            <label class="form-label" for="notes">Keterangan Tambahan</label>
+            <textarea class="form-control" id="notes" rows="3"></textarea>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button class="btn" id="modal-cancel">Batal</button>
+        <button class="btn btn-primary" id="modal-save">Simpan</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Data management functions
+    function initializeData() {
+      if (!localStorage.getItem('administrativeActions')) {
+        localStorage.setItem('administrativeActions', JSON.stringify([]));
+      }
+    }
+
+    // Ambil data orang asing dari localStorage
+    function getForeignersData() {
+      return JSON.parse(localStorage.getItem('foreignPeople')) || [];
+    }
+
+    function getActionsData() {
+      return JSON.parse(localStorage.getItem('administrativeActions')) || [];
+    }
+
+    function saveActionsData(data) {
+      localStorage.setItem('administrativeActions', JSON.stringify(data));
+      updateStats();
+    }
+
+    function updateStats() {
+      const data = getActionsData();
+      const totalActions = data.length;
+      
+      // Hitung jumlah deportasi
+      const deportationActions = data.filter(action => 
+        action.actionType === 'Deportasi dari Wilayah Indonesia'
+      ).length;
+      
+      // Hitung jumlah tindakan bulan ini
+      const currentMonth = new Date().getMonth() + 1;
+      const monthlyActions = data.filter(action => {
+        const actionMonth = new Date(action.actionDate).getMonth() + 1;
+        return actionMonth === currentMonth;
+      }).length;
+      
+      document.getElementById('total-actions').textContent = totalActions;
+      document.getElementById('deportation-actions').textContent = deportationActions;
+      document.getElementById('monthly-actions').textContent = monthlyActions;
+    }
+
+    function renderTable(data = null) {
+      const tableBody = document.getElementById('actions-table-body');
+      const actionsData = data || getActionsData();
+      const emptyState = document.getElementById('empty-state');
+      
+      // Show/hide empty state
+      if (actionsData.length === 0) {
+        tableBody.innerHTML = '';
+        emptyState.style.display = 'block';
+        return;
+      } else {
+        emptyState.style.display = 'none';
+      }
+      
+      tableBody.innerHTML = '';
+      
+      actionsData.forEach(action => {
+        const row = document.createElement('tr');
+        row.innerHTML = `
+          <td>${action.id}</td>
+          <td>${action.foreignerName}</td>
+          <td>${action.passport}</td>
+          <td>${action.actionType}</td>
+          <td>${formatDate(action.actionDate)}</td>
+          <td>${action.residencePermit || '-'}</td>
+          <td>${action.reason}</td>
+          <td>${action.article}</td>
+          <td>
+            <div class="action-buttons">
+              <button class="btn btn-warning btn-sm edit-btn" data-id="${action.id}">
+                <i class="fas fa-edit"></i> Edit
+              </button>
+              <button class="btn btn-danger btn-sm delete-btn" data-id="${action.id}">
+                <i class="fas fa-trash"></i> Hapus
+              </button>
+            </div>
+          </td>
+        `;
+        tableBody.appendChild(row);
+      });
+      
+      // Add event listeners to buttons
+      document.querySelectorAll('.edit-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+          const id = parseInt(this.getAttribute('data-id'));
+          editAction(id);
+        });
+      });
+      
+      document.querySelectorAll('.delete-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+          const id = parseInt(this.getAttribute('data-id'));
+          deleteAction(id);
+        });
+      });
+    }
+
+    function formatDate(dateString) {
+      const date = new Date(dateString);
+      return date.toLocaleDateString('id-ID', {
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit'
+      });
+    }
+
+    // Isi dropdown dengan data orang asing
+    function populateForeignerSelect() {
+      const foreigners = getForeignersData();
+      const select = document.getElementById('foreigner-select');
+      
+      // Clear existing options except the first one
+      while (select.children.length > 1) {
+        select.removeChild(select.lastChild);
+      }
+      
+      foreigners.forEach(foreigner => {
+        const option = document.createElement('option');
+        option.value = foreigner.id;
+        option.textContent = `${foreigner.name} (${foreigner.passport}) - ${foreigner.nationality}`;
+        option.setAttribute('data-passport', foreigner.passport);
+        option.setAttribute('data-nationality', foreigner.nationality);
+        select.appendChild(option);
+      });
+    }
+
+    function addAction(action) {
+      const data = getActionsData();
+      const newId = data.length > 0 ? Math.max(...data.map(a => a.id)) + 1 : 1;
+      action.id = newId;
+      data.push(action);
+      saveActionsData(data);
+      renderTable();
+      showNotification(`Data tindakan untuk <strong>${action.foreignerName}</strong> berhasil ditambahkan`, 'success');
+    }
+
+    function editAction(id) {
+      const data = getActionsData();
+      const action = data.find(a => a.id === id);
+      
+      if (action) {
+        document.getElementById('modal-title').textContent = 'Edit Data Tindakan';
+        document.getElementById('action-id').value = action.id;
+        
+        // Set nilai form
+        document.getElementById('action-type').value = action.actionType;
+        document.getElementById('action-date').value = action.actionDate;
+        document.getElementById('residence-permit').value = action.residencePermit || '';
+        document.getElementById('reason').value = action.reason;
+        document.getElementById('article').value = action.article;
+        document.getElementById('notes').value = action.notes || '';
+        
+        // Untuk foreigner, kita perlu mencari ID-nya berdasarkan nama
+        const foreigners = getForeignersData();
+        const foreigner = foreigners.find(f => f.name === action.foreignerName);
+        if (foreigner) {
+          document.getElementById('foreigner-select').value = foreigner.id;
+        }
+        
+        openModal();
+      }
+    }
+
+    function updateAction(id, updatedAction) {
+      const data = getActionsData();
+      const index = data.findIndex(a => a.id === id);
+      
+      if (index !== -1) {
+        updatedAction.id = id;
+        data[index] = updatedAction;
+        saveActionsData(data);
+        renderTable();
+        showNotification(`Data tindakan untuk <strong>${updatedAction.foreignerName}</strong> berhasil diperbarui`, 'success');
+      }
+    }
+
+    function deleteAction(id) {
+      if (confirm('Apakah Anda yakin ingin menghapus data tindakan ini?')) {
+        const data = getActionsData();
+        const action = data.find(a => a.id === id);
+        const updatedData = data.filter(a => a.id !== id);
+        saveActionsData(updatedData);
+        renderTable();
+        showNotification(`Data tindakan untuk <strong>${action.foreignerName}</strong> berhasil dihapus`, 'success');
+      }
+    }
+
+    function filterData() {
+      const searchTerm = document.getElementById('search-input').value.toLowerCase();
+      const typeFilter = document.getElementById('type-filter').value;
+      const monthFilter = document.getElementById('month-filter').value;
+      
+      const data = getActionsData();
+      
+      let filteredData = data.filter(action => {
+        const matchesSearch = 
+          action.foreignerName.toLowerCase().includes(searchTerm) ||
+          action.passport.toLowerCase().includes(searchTerm) ||
+          action.actionType.toLowerCase().includes(searchTerm);
+        
+        const matchesType = !typeFilter || action.actionType === typeFilter;
+        
+        const matchesMonth = !monthFilter || 
+          (new Date(action.actionDate).getMonth() + 1).toString() === monthFilter;
+        
+        return matchesSearch && matchesType && matchesMonth;
+      });
+      
+      renderTable(filteredData);
+    }
+
+    // Modal functions
+    function openModal() {
+      populateForeignerSelect(); // Refresh data orang asing setiap kali modal dibuka
+      document.getElementById('action-modal').style.display = 'flex';
+    }
+
+    function closeModal() {
+      document.getElementById('action-modal').style.display = 'none';
+      document.getElementById('action-form').reset();
+      document.getElementById('action-id').value = '';
+      document.getElementById('modal-title').textContent = 'Tambah Data Tindakan';
+    }
+
+    function showNotification(message, type = 'success') {
+      const notification = document.getElementById('notification');
+      const notificationText = document.getElementById('notification-text');
+      
+      notificationText.innerHTML = message;
+      notification.className = `alert alert-${type}`;
+      notification.style.display = 'flex';
+      
+      // Auto hide after 5 seconds
+      setTimeout(() => {
+        notification.style.display = 'none';
+      }, 5000);
+    }
+
+    // Initialize when page loads
+    document.addEventListener('DOMContentLoaded', function() {
+      initializeData();
+      updateStats();
+      renderTable();
+      
+      // Event listeners for buttons
+      document.getElementById('add-action-btn').addEventListener('click', openModal);
+      document.getElementById('empty-add-btn').addEventListener('click', openModal);
+      document.getElementById('modal-close').addEventListener('click', closeModal);
+      document.getElementById('modal-cancel').addEventListener('click', closeModal);
+      document.getElementById('notification-close').addEventListener('click', function() {
+        document.getElementById('notification').style.display = 'none';
+      });
+      
+      // Event listener for form submission
+      document.getElementById('modal-save').addEventListener('click', function() {
+        const form = document.getElementById('action-form');
+        if (!form.checkValidity()) {
+          form.reportValidity();
+          return;
+        }
+        
+        // Ambil data orang asing yang dipilih
+        const foreignerSelect = document.getElementById('foreigner-select');
+        const selectedOption = foreignerSelect.options[foreignerSelect.selectedIndex];
+        const foreignerId = foreignerSelect.value;
+        const foreignerName = selectedOption.text.split(' (')[0]; // Ambil nama dari teks option
+        const passport = selectedOption.getAttribute('data-passport');
+        
+        const action = {
+          foreignerId: parseInt(foreignerId),
+          foreignerName: foreignerName,
+          passport: passport,
+          actionType: document.getElementById('action-type').value,
+          actionDate: document.getElementById('action-date').value,
+          residencePermit: document.getElementById('residence-permit').value,
+          reason: document.getElementById('reason').value,
+          article: document.getElementById('article').value,
+          notes: document.getElementById('notes').value
+        };
+        
+        const id = document.getElementById('action-id').value;
+        if (id) {
+          updateAction(parseInt(id), action);
+        } else {
+          addAction(action);
+        }
+        
+        closeModal();
+      });
+      
+      // Event listeners for filter
+      document.getElementById('search-input').addEventListener('input', filterData);
+      document.getElementById('type-filter').addEventListener('change', filterData);
+      document.getElementById('month-filter').addEventListener('change', filterData);
+    });
+  </script>
+</body>
+</html>

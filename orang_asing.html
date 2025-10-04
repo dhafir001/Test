@@ -1,0 +1,1135 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Data Orang Asing - Sistem Informasi TAK</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #4361ee;
+      --primary-light: #4895ef;
+      --secondary: #3f37c9;
+      --success: #4cc9f0;
+      --danger: #f72585;
+      --warning: #f8961e;
+      --info: #4895ef;
+      --dark: #1e1e2d;
+      --light: #f8f9fa;
+      --gray: #6c757d;
+      --gray-light: #e9ecef;
+      --sidebar-width: 260px;
+      --header-height: 70px;
+      --transition: all 0.3s ease;
+      --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.1);
+      --radius: 12px;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: #f5f7fb;
+      color: #333;
+      line-height: 1.6;
+      display: flex;
+      min-height: 100vh;
+    }
+
+    /* Sidebar Styles */
+    .sidebar {
+      width: var(--sidebar-width);
+      background: linear-gradient(180deg, var(--dark) 0%, #2d2d44 100%);
+      color: white;
+      height: 100vh;
+      position: fixed;
+      overflow-y: auto;
+      transition: var(--transition);
+      z-index: 1000;
+      box-shadow: var(--shadow-lg);
+    }
+
+    .logo-container {
+      padding: 1.5rem 1rem;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 1rem;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .logo-container img {
+      max-height: 50px;
+      max-width: 100px;
+      object-fit: contain;
+    }
+
+    .sidebar h2 {
+      font-size: 0.9rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      padding: 1.5rem 1.5rem 0.5rem;
+      color: rgba(255, 255, 255, 0.6);
+    }
+
+    .sidebar a {
+      display: flex;
+      align-items: center;
+      padding: 0.9rem 1.5rem;
+      color: rgba(255, 255, 255, 0.8);
+      text-decoration: none;
+      transition: var(--transition);
+      border-left: 4px solid transparent;
+      font-weight: 500;
+    }
+
+    .sidebar a i {
+      margin-right: 12px;
+      font-size: 1.2rem;
+      width: 24px;
+      text-align: center;
+    }
+
+    .sidebar a:hover {
+      background-color: rgba(255, 255, 255, 0.05);
+      color: white;
+      border-left-color: var(--primary-light);
+    }
+
+    .sidebar a.active {
+      background-color: rgba(67, 97, 238, 0.2);
+      color: white;
+      border-left-color: var(--primary);
+    }
+
+    /* Content Styles */
+    .content {
+      flex: 1;
+      margin-left: var(--sidebar-width);
+      padding: 2rem;
+      transition: var(--transition);
+    }
+
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 2rem;
+      padding-bottom: 1rem;
+      border-bottom: 1px solid var(--gray-light);
+    }
+
+    header h1 {
+      font-size: 1.8rem;
+      font-weight: 700;
+      color: var(--dark);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    header h1 i {
+      color: var(--primary);
+    }
+
+    .user-profile {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 0.5rem 1rem;
+      background: white;
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      cursor: pointer;
+    }
+
+    .user-profile img {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      object-fit: cover;
+    }
+
+    /* Stats Cards */
+    .stats-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 1.5rem;
+      margin-bottom: 2rem;
+    }
+
+    .stat-card {
+      background: white;
+      border-radius: var(--radius);
+      padding: 1.5rem;
+      box-shadow: var(--shadow);
+      transition: var(--transition);
+      border-left: 4px solid var(--primary);
+    }
+
+    .stat-card:hover {
+      transform: translateY(-5px);
+      box-shadow: var(--shadow-lg);
+    }
+
+    .stat-card.orange {
+      border-left-color: var(--warning);
+    }
+
+    .stat-card.green {
+      border-left-color: #4ade80;
+    }
+
+    .stat-card.purple {
+      border-left-color: #a855f7;
+    }
+
+    .stat-card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+    }
+
+    .stat-card-title {
+      font-size: 0.9rem;
+      color: var(--gray);
+      font-weight: 500;
+    }
+
+    .stat-card-icon {
+      width: 50px;
+      height: 50px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 1.5rem;
+    }
+
+    .stat-card-icon.blue {
+      background: linear-gradient(135deg, var(--primary), var(--primary-light));
+    }
+
+    .stat-card-icon.orange {
+      background: linear-gradient(135deg, var(--warning), #f9a826);
+    }
+
+    .stat-card-icon.green {
+      background: linear-gradient(135deg, #4ade80, #22c55e);
+    }
+
+    .stat-card-icon.purple {
+      background: linear-gradient(135deg, #a855f7, #8b5cf6);
+    }
+
+    .stat-card-value {
+      font-size: 2rem;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+    }
+
+    .stat-card-change {
+      font-size: 0.85rem;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .stat-card-change.positive {
+      color: #22c55e;
+    }
+
+    .stat-card-change.negative {
+      color: var(--danger);
+    }
+
+    /* Main Card */
+    .main-card {
+      background: white;
+      border-radius: var(--radius);
+      padding: 1.5rem;
+      box-shadow: var(--shadow);
+      margin-bottom: 2rem;
+    }
+
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.5rem;
+    }
+
+    .card-title {
+      font-size: 1.5rem;
+      font-weight: 600;
+      color: var(--dark);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .card-title i {
+      color: var(--primary);
+    }
+
+    .card-actions {
+      display: flex;
+      gap: 10px;
+    }
+
+    /* Buttons */
+    .btn {
+      padding: 0.7rem 1.2rem;
+      border-radius: 8px;
+      font-weight: 500;
+      border: none;
+      cursor: pointer;
+      transition: var(--transition);
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      text-decoration: none;
+      font-size: 0.9rem;
+    }
+
+    .btn-primary {
+      background-color: var(--primary);
+      color: white;
+    }
+
+    .btn-primary:hover {
+      background-color: var(--secondary);
+      transform: translateY(-2px);
+      box-shadow: var(--shadow);
+    }
+
+    .btn-success {
+      background-color: #22c55e;
+      color: white;
+    }
+
+    .btn-success:hover {
+      background-color: #16a34a;
+      transform: translateY(-2px);
+      box-shadow: var(--shadow);
+    }
+
+    .btn-warning {
+      background-color: var(--warning);
+      color: white;
+    }
+
+    .btn-warning:hover {
+      background-color: #e07c0c;
+      transform: translateY(-2px);
+    }
+
+    .btn-danger {
+      background-color: var(--danger);
+      color: white;
+    }
+
+    .btn-danger:hover {
+      background-color: #e1146e;
+      transform: translateY(-2px);
+    }
+
+    .btn-sm {
+      padding: 0.5rem 0.8rem;
+      font-size: 0.8rem;
+    }
+
+    /* Table */
+    .table-container {
+      overflow-x: auto;
+      border-radius: var(--radius);
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+      margin-bottom: 1.5rem;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background: white;
+    }
+
+    thead {
+      background: linear-gradient(135deg, var(--primary), var(--primary-light));
+      color: white;
+    }
+
+    th {
+      padding: 15px 12px;
+      text-align: left;
+      font-weight: 600;
+      position: relative;
+    }
+
+    th:not(:last-child)::after {
+      content: '';
+      position: absolute;
+      right: 0;
+      top: 50%;
+      transform: translateY(-50%);
+      height: 60%;
+      width: 1px;
+      background: rgba(255, 255, 255, 0.2);
+    }
+
+    td {
+      padding: 12px;
+      border-bottom: 1px solid #e2e8f0;
+    }
+
+    tbody tr {
+      transition: background-color 0.2s ease;
+    }
+
+    tbody tr:hover {
+      background-color: #f7fafc;
+    }
+
+    .action-buttons {
+      display: flex;
+      gap: 8px;
+    }
+
+    /* Status Badge */
+    .badge {
+      display: inline-block;
+      padding: 6px 12px;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      font-weight: 600;
+    }
+
+    .badge-success {
+      background-color: rgba(34, 197, 94, 0.1);
+      color: #16a34a;
+    }
+
+    .badge-warning {
+      background-color: rgba(248, 150, 30, 0.1);
+      color: #e07c0c;
+    }
+
+    .badge-danger {
+      background-color: rgba(247, 37, 133, 0.1);
+      color: #e1146e;
+    }
+
+    /* Search and Filter */
+    .search-filter {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 20px;
+      gap: 15px;
+      flex-wrap: wrap;
+    }
+
+    .search-box {
+      flex: 1;
+      min-width: 300px;
+      position: relative;
+    }
+
+    .search-box input {
+      width: 100%;
+      padding: 12px 20px 12px 45px;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      font-size: 1rem;
+      transition: var(--transition);
+    }
+
+    .search-box input:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.1);
+    }
+
+    .search-icon {
+      position: absolute;
+      left: 15px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #a0aec0;
+    }
+
+    .filter-box {
+      display: flex;
+      gap: 10px;
+    }
+
+    .filter-box select {
+      padding: 12px 15px;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      background: white;
+      font-size: 1rem;
+      cursor: pointer;
+    }
+
+    /* Modal */
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.5);
+      z-index: 2000;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .modal-content {
+      background: white;
+      border-radius: var(--radius);
+      width: 90%;
+      max-width: 600px;
+      box-shadow: var(--shadow-lg);
+      animation: modalFadeIn 0.3s ease;
+    }
+
+    .modal-header {
+      padding: 1.5rem;
+      border-bottom: 1px solid var(--gray-light);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .modal-title {
+      font-size: 1.3rem;
+      font-weight: 600;
+      color: var(--dark);
+    }
+
+    .modal-close {
+      background: none;
+      border: none;
+      font-size: 1.5rem;
+      cursor: pointer;
+      color: var(--gray);
+    }
+
+    .modal-body {
+      padding: 1.5rem;
+    }
+
+    .modal-footer {
+      padding: 1rem 1.5rem;
+      border-top: 1px solid var(--gray-light);
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+    }
+
+    /* Form */
+    .form-group {
+      margin-bottom: 1.2rem;
+    }
+
+    .form-label {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-weight: 500;
+      color: var(--dark);
+    }
+
+    .form-control {
+      width: 100%;
+      padding: 0.8rem 1rem;
+      border: 1px solid var(--gray-light);
+      border-radius: 8px;
+      font-size: 1rem;
+      transition: var(--transition);
+    }
+
+    .form-control:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.1);
+    }
+
+    /* Alert */
+    .alert {
+      padding: 1rem 1.5rem;
+      border-radius: 8px;
+      margin-bottom: 1.5rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-left: 4px solid;
+      animation: fadeIn 0.5s ease;
+    }
+
+    .alert-success {
+      background-color: rgba(34, 197, 94, 0.1);
+      border-left-color: #22c55e;
+      color: #166534;
+    }
+
+    .alert-danger {
+      background-color: rgba(247, 37, 133, 0.1);
+      border-left-color: var(--danger);
+      color: #9f1239;
+    }
+
+    .alert-close {
+      background: none;
+      border: none;
+      font-size: 1.2rem;
+      cursor: pointer;
+      color: inherit;
+    }
+
+    /* Empty State */
+    .empty-state {
+      text-align: center;
+      padding: 3rem 2rem;
+      color: var(--gray);
+    }
+
+    .empty-state i {
+      font-size: 4rem;
+      margin-bottom: 1rem;
+      color: var(--gray-light);
+    }
+
+    .empty-state h3 {
+      font-size: 1.5rem;
+      margin-bottom: 0.5rem;
+    }
+
+    /* Animations */
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes modalFadeIn {
+      from { opacity: 0; transform: scale(0.9); }
+      to { opacity: 1; transform: scale(1); }
+    }
+
+    /* Footer */
+    footer {
+      text-align: center;
+      padding: 1.5rem;
+      margin-top: 2rem;
+      border-top: 1px solid var(--gray-light);
+      color: var(--gray);
+      font-size: 0.9rem;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .sidebar {
+        width: 70px;
+        overflow: visible;
+      }
+
+      .sidebar .logo-container {
+        padding: 1rem 0.5rem;
+        flex-direction: column;
+      }
+
+      .sidebar h2, .sidebar a span {
+        display: none;
+      }
+
+      .sidebar a {
+        justify-content: center;
+        padding: 1rem;
+        border-left: none;
+        border-bottom: 4px solid transparent;
+      }
+
+      .sidebar a.active {
+        border-left: none;
+        border-bottom-color: var(--primary);
+      }
+
+      .content {
+        margin-left: 70px;
+        padding: 1rem;
+      }
+
+      .stats-container {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .search-filter {
+        flex-direction: column;
+      }
+      
+      .search-box {
+        min-width: 100%;
+      }
+      
+      .action-buttons {
+        flex-direction: column;
+      }
+      
+      th, td {
+        padding: 10px 8px;
+        font-size: 0.9rem;
+      }
+    }
+
+    @media (max-width: 576px) {
+      .stats-container {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Sidebar -->
+  <div class="sidebar">
+    <div class="logo-container">
+      <img src="logo1.png" alt="Logo 1">
+      <img src="logo2.png" alt="Logo 2">
+    </div>
+    <h2>Menu</h2>
+    <a href="index.html"><i class="fas fa-home"></i> <span>Dashboard</span></a>
+    <a href="orang_asing.html" class="active"><i class="fas fa-users"></i> <span>Data Orang Asing</span></a>
+    <a href="tindakan.html"><i class="fas fa-gavel"></i> <span>Tindakan</span></a>
+    <a href="rekap.html"><i class="fas fa-chart-bar"></i> <span>Rekapitulasi</span></a>
+  </div>
+
+  <!-- Content -->
+  <div class="content">
+    <header>
+      <h1><i class="fas fa-users"></i> Data Orang Asing</h1>
+      <div class="user-profile">
+        <img src="https://ui-avatars.com/api/?name=Admin+User&background=4361ee&color=fff" alt="User">
+        <div>
+          <div class="user-name">Admin User</div>
+          <div class="user-role">Petugas Keimigrasian</div>
+        </div>
+      </div>
+    </header>
+
+    <!-- Stats Cards -->
+    <div class="stats-container">
+      <div class="stat-card">
+        <div class="stat-card-header">
+          <div class="stat-card-title">Total Orang Asing</div>
+          <div class="stat-card-icon blue">
+            <i class="fas fa-user-friends"></i>
+          </div>
+        </div>
+        <div class="stat-card-value" id="total-people">0</div>
+        <div class="stat-card-change positive">
+          <i class="fas fa-arrow-up"></i> Data tersimpan lokal
+        </div>
+      </div>
+      
+      <div class="stat-card orange">
+        <div class="stat-card-header">
+          <div class="stat-card-title">Status Aktif</div>
+          <div class="stat-card-icon orange">
+            <i class="fas fa-user-check"></i>
+          </div>
+        </div>
+        <div class="stat-card-value" id="active-people">0</div>
+        <div class="stat-card-change positive">
+          <i class="fas fa-check-circle"></i> Dalam wilayah Indonesia
+        </div>
+      </div>
+      
+      <div class="stat-card green">
+        <div class="stat-card-header">
+          <div class="stat-card-title">Negara Asal</div>
+          <div class="stat-card-icon green">
+            <i class="fas fa-globe-asia"></i>
+          </div>
+        </div>
+        <div class="stat-card-value" id="total-countries">0</div>
+        <div class="stat-card-change positive">
+          <i class="fas fa-flag"></i> Beragam negara
+        </div>
+      </div>
+    </div>
+
+    <!-- Main Card -->
+    <div class="main-card">
+      <div class="card-header">
+        <div class="card-title">
+          <i class="fas fa-list"></i> Daftar Orang Asing
+        </div>
+        <div class="card-actions">
+          <button class="btn btn-primary" id="add-person-btn">
+            <i class="fas fa-plus"></i> Tambah Data
+          </button>
+        </div>
+      </div>
+
+      <!-- Alert Notification -->
+      <div class="alert alert-success" id="notification" style="display: none;">
+        <span id="notification-text">Data berhasil ditambahkan</span>
+        <button class="alert-close" id="notification-close">×</button>
+      </div>
+
+      <!-- Search and Filter -->
+      <div class="search-filter">
+        <div class="search-box">
+          <span class="search-icon"><i class="fas fa-search"></i></span>
+          <input type="text" id="search-input" placeholder="Cari berdasarkan nama, kewarganegaraan, atau nomor paspor...">
+        </div>
+        <div class="filter-box">
+          <select id="status-filter">
+            <option value="">Semua Status</option>
+            <option value="Aktif">Aktif</option>
+            <option value="Tidak Aktif">Tidak Aktif</option>
+          </select>
+          <select id="country-filter">
+            <option value="">Semua Negara</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Table Container -->
+      <div class="table-container">
+        <table>
+          <thead>
+            <tr>
+              <th width="5%">ID</th>
+              <th width="25%">Nama Lengkap</th>
+              <th width="20%">Kewarganegaraan</th>
+              <th width="15%">Nomor Paspor</th>
+              <th width="15%">Status</th>
+              <th width="20%">Aksi</th>
+            </tr>
+          </thead>
+          <tbody id="people-table-body">
+            <!-- Data akan diisi oleh JavaScript -->
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Empty State -->
+      <div class="empty-state" id="empty-state">
+        <i class="fas fa-users"></i>
+        <h3>Belum ada data orang asing</h3>
+        <p>Mulai dengan menambahkan data orang asing pertama Anda.</p>
+        <button class="btn btn-primary mt-3" id="empty-add-btn">
+          <i class="fas fa-plus"></i> Tambah Data Pertama
+        </button>
+      </div>
+    </div>
+
+    <footer>
+      <p>© 2025 Sistem Informasi TAK - Direktorat Jenderal Imigrasi</p>
+    </footer>
+  </div>
+
+  <!-- Modal Tambah/Edit Data -->
+  <div class="modal" id="person-modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <div class="modal-title" id="modal-title">Tambah Data Orang Asing</div>
+        <button class="modal-close" id="modal-close">×</button>
+      </div>
+      <div class="modal-body">
+        <form id="person-form">
+          <input type="hidden" id="person-id">
+          <div class="form-group">
+            <label class="form-label" for="name">Nama Lengkap *</label>
+            <input type="text" class="form-control" id="name" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="nationality">Kewarganegaraan *</label>
+            <input type="text" class="form-control" id="nationality" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="passport">Nomor Paspor *</label>
+            <input type="text" class="form-control" id="passport" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="status">Status *</label>
+            <select class="form-control" id="status" required>
+              <option value="">Pilih Status</option>
+              <option value="Aktif">Aktif</option>
+              <option value="Tidak Aktif">Tidak Aktif</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="notes">Catatan</label>
+            <textarea class="form-control" id="notes" rows="3"></textarea>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button class="btn" id="modal-cancel">Batal</button>
+        <button class="btn btn-primary" id="modal-save">Simpan</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Data management functions
+    function initializeData() {
+      if (!localStorage.getItem('foreignPeople')) {
+        localStorage.setItem('foreignPeople', JSON.stringify([]));
+      }
+    }
+
+    function getData() {
+      return JSON.parse(localStorage.getItem('foreignPeople')) || [];
+    }
+
+    function saveData(data) {
+      localStorage.setItem('foreignPeople', JSON.stringify(data));
+      updateStats();
+    }
+
+    function updateStats() {
+      const data = getData();
+      const totalPeople = data.length;
+      const activePeople = data.filter(person => person.status === 'Aktif').length;
+      const countries = [...new Set(data.map(person => person.nationality))].length;
+      
+      document.getElementById('total-people').textContent = totalPeople;
+      document.getElementById('active-people').textContent = activePeople;
+      document.getElementById('total-countries').textContent = countries;
+    }
+
+    function renderTable(data = null) {
+      const tableBody = document.getElementById('people-table-body');
+      const peopleData = data || getData();
+      const emptyState = document.getElementById('empty-state');
+      
+      // Show/hide empty state
+      if (peopleData.length === 0) {
+        tableBody.innerHTML = '';
+        emptyState.style.display = 'block';
+        return;
+      } else {
+        emptyState.style.display = 'none';
+      }
+      
+      tableBody.innerHTML = '';
+      
+      peopleData.forEach(person => {
+        const statusClass = person.status === 'Aktif' ? 'badge-success' : 'badge-danger';
+        
+        const row = document.createElement('tr');
+        row.innerHTML = `
+          <td>${person.id}</td>
+          <td>${person.name}</td>
+          <td>${person.nationality}</td>
+          <td>${person.passport}</td>
+          <td><span class="badge ${statusClass}">${person.status}</span></td>
+          <td>
+            <div class="action-buttons">
+              <button class="btn btn-warning btn-sm edit-btn" data-id="${person.id}">
+                <i class="fas fa-edit"></i> Edit
+              </button>
+              <button class="btn btn-danger btn-sm delete-btn" data-id="${person.id}">
+                <i class="fas fa-trash"></i> Hapus
+              </button>
+            </div>
+          </td>
+        `;
+        tableBody.appendChild(row);
+      });
+      
+      // Add event listeners to buttons
+      document.querySelectorAll('.edit-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+          const id = parseInt(this.getAttribute('data-id'));
+          editPerson(id);
+        });
+      });
+      
+      document.querySelectorAll('.delete-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+          const id = parseInt(this.getAttribute('data-id'));
+          deletePerson(id);
+        });
+      });
+    }
+
+    function addPerson(person) {
+      const data = getData();
+      const newId = data.length > 0 ? Math.max(...data.map(p => p.id)) + 1 : 1;
+      person.id = newId;
+      data.push(person);
+      saveData(data);
+      renderTable();
+      showNotification(`Data <strong>${person.name}</strong> berhasil ditambahkan`, 'success');
+    }
+
+    function editPerson(id) {
+      const data = getData();
+      const person = data.find(p => p.id === id);
+      
+      if (person) {
+        document.getElementById('modal-title').textContent = 'Edit Data Orang Asing';
+        document.getElementById('person-id').value = person.id;
+        document.getElementById('name').value = person.name;
+        document.getElementById('nationality').value = person.nationality;
+        document.getElementById('passport').value = person.passport;
+        document.getElementById('status').value = person.status;
+        document.getElementById('notes').value = person.notes || '';
+        
+        openModal();
+      }
+    }
+
+    function updatePerson(id, updatedPerson) {
+      const data = getData();
+      const index = data.findIndex(p => p.id === id);
+      
+      if (index !== -1) {
+        updatedPerson.id = id;
+        data[index] = updatedPerson;
+        saveData(data);
+        renderTable();
+        showNotification(`Data <strong>${updatedPerson.name}</strong> berhasil diperbarui`, 'success');
+      }
+    }
+
+    function deletePerson(id) {
+      if (confirm('Apakah Anda yakin ingin menghapus data ini?')) {
+        const data = getData();
+        const person = data.find(p => p.id === id);
+        const updatedData = data.filter(p => p.id !== id);
+        saveData(updatedData);
+        renderTable();
+        showNotification(`Data <strong>${person.name}</strong> berhasil dihapus`, 'success');
+      }
+    }
+
+    function filterData() {
+      const searchTerm = document.getElementById('search-input').value.toLowerCase();
+      const statusFilter = document.getElementById('status-filter').value;
+      const countryFilter = document.getElementById('country-filter').value;
+      
+      const data = getData();
+      
+      let filteredData = data.filter(person => {
+        const matchesSearch = 
+          person.name.toLowerCase().includes(searchTerm) ||
+          person.nationality.toLowerCase().includes(searchTerm) ||
+          person.passport.toLowerCase().includes(searchTerm);
+        
+        const matchesStatus = !statusFilter || person.status === statusFilter;
+        const matchesCountry = !countryFilter || person.nationality === countryFilter;
+        
+        return matchesSearch && matchesStatus && matchesCountry;
+      });
+      
+      renderTable(filteredData);
+    }
+
+    function populateCountryFilter() {
+      const data = getData();
+      const countries = [...new Set(data.map(person => person.nationality))].sort();
+      const countryFilter = document.getElementById('country-filter');
+      
+      // Clear existing options except the first one
+      while (countryFilter.children.length > 1) {
+        countryFilter.removeChild(countryFilter.lastChild);
+      }
+      
+      countries.forEach(country => {
+        const option = document.createElement('option');
+        option.value = country;
+        option.textContent = country;
+        countryFilter.appendChild(option);
+      });
+    }
+
+    // Modal functions
+    function openModal() {
+      document.getElementById('person-modal').style.display = 'flex';
+    }
+
+    function closeModal() {
+      document.getElementById('person-modal').style.display = 'none';
+      document.getElementById('person-form').reset();
+      document.getElementById('person-id').value = '';
+      document.getElementById('modal-title').textContent = 'Tambah Data Orang Asing';
+    }
+
+    function showNotification(message, type = 'success') {
+      const notification = document.getElementById('notification');
+      const notificationText = document.getElementById('notification-text');
+      
+      notificationText.innerHTML = message;
+      notification.className = `alert alert-${type}`;
+      notification.style.display = 'flex';
+      
+      // Auto hide after 5 seconds
+      setTimeout(() => {
+        notification.style.display = 'none';
+      }, 5000);
+    }
+
+    // Initialize when page loads
+    document.addEventListener('DOMContentLoaded', function() {
+      initializeData();
+      updateStats();
+      renderTable();
+      populateCountryFilter();
+      
+      // Event listeners for buttons
+      document.getElementById('add-person-btn').addEventListener('click', openModal);
+      document.getElementById('empty-add-btn').addEventListener('click', openModal);
+      document.getElementById('modal-close').addEventListener('click', closeModal);
+      document.getElementById('modal-cancel').addEventListener('click', closeModal);
+      document.getElementById('notification-close').addEventListener('click', function() {
+        document.getElementById('notification').style.display = 'none';
+      });
+      
+      // Event listener for form submission
+      document.getElementById('modal-save').addEventListener('click', function() {
+        const form = document.getElementById('person-form');
+        if (!form.checkValidity()) {
+          form.reportValidity();
+          return;
+        }
+        
+        const person = {
+          name: document.getElementById('name').value,
+          nationality: document.getElementById('nationality').value,
+          passport: document.getElementById('passport').value,
+          status: document.getElementById('status').value,
+          notes: document.getElementById('notes').value
+        };
+        
+        const id = document.getElementById('person-id').value;
+        if (id) {
+          updatePerson(parseInt(id), person);
+        } else {
+          addPerson(person);
+        }
+        
+        closeModal();
+        populateCountryFilter();
+      });
+      
+      // Event listeners for filter
+      document.getElementById('search-input').addEventListener('input', filterData);
+      document.getElementById('status-filter').addEventListener('change', filterData);
+      document.getElementById('country-filter').addEventListener('change', filterData);
+    });
+  </script>
+</body>
+</html>

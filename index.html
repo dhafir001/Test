@@ -1,0 +1,885 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard - Sistem Informasi TAK</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    :root {
+      --primary: #4361ee;
+      --primary-light: #4895ef;
+      --secondary: #3f37c9;
+      --success: #4cc9f0;
+      --danger: #f72585;
+      --warning: #f8961e;
+      --info: #4895ef;
+      --dark: #1e1e2d;
+      --light: #f8f9fa;
+      --gray: #6c757d;
+      --gray-light: #e9ecef;
+      --sidebar-width: 260px;
+      --header-height: 70px;
+      --transition: all 0.3s ease;
+      --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.1);
+      --radius: 12px;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: #f5f7fb;
+      color: #333;
+      line-height: 1.6;
+      display: flex;
+      min-height: 100vh;
+    }
+
+    /* Sidebar Styles */
+    .sidebar {
+      width: var(--sidebar-width);
+      background: linear-gradient(180deg, var(--dark) 0%, #2d2d44 100%);
+      color: white;
+      height: 100vh;
+      position: fixed;
+      overflow-y: auto;
+      transition: var(--transition);
+      z-index: 1000;
+      box-shadow: var(--shadow-lg);
+    }
+
+    .logo-container {
+      padding: 1.5rem 1rem;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 1rem;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .logo-container img {
+      max-height: 50px;
+      max-width: 100px;
+      object-fit: contain;
+    }
+
+    .sidebar h2 {
+      font-size: 0.9rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      padding: 1.5rem 1.5rem 0.5rem;
+      color: rgba(255, 255, 255, 0.6);
+    }
+
+    .sidebar a {
+      display: flex;
+      align-items: center;
+      padding: 0.9rem 1.5rem;
+      color: rgba(255, 255, 255, 0.8);
+      text-decoration: none;
+      transition: var(--transition);
+      border-left: 4px solid transparent;
+      font-weight: 500;
+    }
+
+    .sidebar a i {
+      margin-right: 12px;
+      font-size: 1.2rem;
+      width: 24px;
+      text-align: center;
+    }
+
+    .sidebar a:hover {
+      background-color: rgba(255, 255, 255, 0.05);
+      color: white;
+      border-left-color: var(--primary-light);
+    }
+
+    .sidebar a.active {
+      background-color: rgba(67, 97, 238, 0.2);
+      color: white;
+      border-left-color: var(--primary);
+    }
+
+    /* Content Styles */
+    .content {
+      flex: 1;
+      margin-left: var(--sidebar-width);
+      padding: 2rem;
+      transition: var(--transition);
+    }
+
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 2rem;
+      padding-bottom: 1rem;
+      border-bottom: 1px solid var(--gray-light);
+    }
+
+    header h1 {
+      font-size: 1.8rem;
+      font-weight: 700;
+      color: var(--dark);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    header h1 i {
+      color: var(--primary);
+    }
+
+    .user-profile {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 0.5rem 1rem;
+      background: white;
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      cursor: pointer;
+    }
+
+    .user-profile img {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      object-fit: cover;
+    }
+
+    /* Stats Cards */
+    .stats-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 1.5rem;
+      margin-bottom: 2rem;
+    }
+
+    .stat-card {
+      background: white;
+      border-radius: var(--radius);
+      padding: 1.5rem;
+      box-shadow: var(--shadow);
+      transition: var(--transition);
+      border-left: 4px solid var(--primary);
+    }
+
+    .stat-card:hover {
+      transform: translateY(-5px);
+      box-shadow: var(--shadow-lg);
+    }
+
+    .stat-card.orange {
+      border-left-color: var(--warning);
+    }
+
+    .stat-card.green {
+      border-left-color: #4ade80;
+    }
+
+    .stat-card.purple {
+      border-left-color: #a855f7;
+    }
+
+    .stat-card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+    }
+
+    .stat-card-title {
+      font-size: 0.9rem;
+      color: var(--gray);
+      font-weight: 500;
+    }
+
+    .stat-card-icon {
+      width: 50px;
+      height: 50px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 1.5rem;
+    }
+
+    .stat-card-icon.blue {
+      background: linear-gradient(135deg, var(--primary), var(--primary-light));
+    }
+
+    .stat-card-icon.orange {
+      background: linear-gradient(135deg, var(--warning), #f9a826);
+    }
+
+    .stat-card-icon.green {
+      background: linear-gradient(135deg, #4ade80, #22c55e);
+    }
+
+    .stat-card-icon.purple {
+      background: linear-gradient(135deg, #a855f7, #8b5cf6);
+    }
+
+    .stat-card-value {
+      font-size: 2rem;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+    }
+
+    .stat-card-change {
+      font-size: 0.85rem;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .stat-card-change.positive {
+      color: #22c55e;
+    }
+
+    .stat-card-change.negative {
+      color: var(--danger);
+    }
+
+    /* Charts Section */
+    .charts-container {
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      gap: 1.5rem;
+      margin-bottom: 2rem;
+    }
+
+    .chart-card {
+      background: white;
+      border-radius: var(--radius);
+      padding: 1.5rem;
+      box-shadow: var(--shadow);
+    }
+
+    .chart-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.5rem;
+    }
+
+    .chart-title {
+      font-size: 1.2rem;
+      font-weight: 600;
+      color: var(--dark);
+    }
+
+    .chart-actions {
+      display: flex;
+      gap: 10px;
+    }
+
+    .chart-actions select {
+      padding: 0.5rem;
+      border-radius: 6px;
+      border: 1px solid var(--gray-light);
+      background: white;
+      font-size: 0.9rem;
+    }
+
+    .chart-container {
+      height: 300px;
+      position: relative;
+    }
+
+    /* Info Sections */
+    .info-sections {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 1.5rem;
+      margin-bottom: 2rem;
+    }
+
+    .info-card {
+      background: white;
+      border-radius: var(--radius);
+      padding: 1.5rem;
+      box-shadow: var(--shadow);
+    }
+
+    .info-card h2 {
+      font-size: 1.2rem;
+      font-weight: 600;
+      margin-bottom: 1rem;
+      color: var(--dark);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .info-card h2 i {
+      color: var(--primary);
+    }
+
+    .info-card ul {
+      list-style-type: none;
+    }
+
+    .info-card li {
+      padding: 0.7rem 0;
+      border-bottom: 1px solid var(--gray-light);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .info-card li:last-child {
+      border-bottom: none;
+    }
+
+    .info-card li i {
+      color: var(--success);
+      font-size: 0.9rem;
+    }
+
+    /* Footer */
+    footer {
+      text-align: center;
+      padding: 1.5rem;
+      margin-top: 2rem;
+      border-top: 1px solid var(--gray-light);
+      color: var(--gray);
+      font-size: 0.9rem;
+    }
+
+    /* Responsive */
+    @media (max-width: 992px) {
+      .charts-container {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .sidebar {
+        width: 70px;
+        overflow: visible;
+      }
+
+      .sidebar .logo-container {
+        padding: 1rem 0.5rem;
+        flex-direction: column;
+      }
+
+      .sidebar h2, .sidebar a span {
+        display: none;
+      }
+
+      .sidebar a {
+        justify-content: center;
+        padding: 1rem;
+        border-left: none;
+        border-bottom: 4px solid transparent;
+      }
+
+      .sidebar a.active {
+        border-left: none;
+        border-bottom-color: var(--primary);
+      }
+
+      .content {
+        margin-left: 70px;
+        padding: 1rem;
+      }
+
+      .stats-container {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @media (max-width: 576px) {
+      .stats-container {
+        grid-template-columns: 1fr;
+      }
+
+      .info-sections {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Sidebar -->
+  <div class="sidebar">
+    <div class="logo-container">
+      <img src="logo1.png" alt="Logo 1">
+      <img src="logo2.png" alt="Logo 2">
+    </div>
+    <h2>Menu</h2>
+    <a href="index.html" class="active"><i class="fas fa-home"></i> <span>Dashboard</span></a>
+    <a href="orang_asing.html"><i class="fas fa-users"></i> <span>Data Orang Asing</span></a>
+    <a href="tindakan.html"><i class="fas fa-gavel"></i> <span>Tindakan</span></a>
+    <a href="rekap.html"><i class="fas fa-chart-bar"></i> <span>Rekapitulasi</span></a>
+  </div>
+
+  <!-- Content -->
+  <div class="content">
+    <header>
+      <h1><i class="fas fa-tachometer-alt"></i> Dashboard - Sistem Informasi TAK</h1>
+      <div class="user-profile">
+        <img src="https://ui-avatars.com/api/?name=Admin+User&background=4361ee&color=fff" alt="User">
+        <div>
+          <div class="user-name">Admin User</div>
+          <div class="user-role">Petugas Keimigrasian</div>
+        </div>
+      </div>
+    </header>
+
+    <!-- Stats Cards -->
+    <div class="stats-container">
+      <div class="stat-card">
+        <div class="stat-card-header">
+          <div class="stat-card-title">Total Kasus</div>
+          <div class="stat-card-icon blue">
+            <i class="fas fa-file-alt"></i>
+          </div>
+        </div>
+        <div class="stat-card-value" id="totalKasus">1,248</div>
+        <div class="stat-card-change positive">
+          <i class="fas fa-arrow-up"></i> <span id="persenTotalKasus">12.5%</span> dari bulan lalu
+        </div>
+      </div>
+      
+      <div class="stat-card orange">
+        <div class="stat-card-header">
+          <div class="stat-card-title">Kasus Baru</div>
+          <div class="stat-card-icon orange">
+            <i class="fas fa-exclamation-circle"></i>
+          </div>
+        </div>
+        <div class="stat-card-value" id="kasusBaru">84</div>
+        <div class="stat-card-change positive">
+          <i class="fas fa-arrow-up"></i> <span id="persenKasusBaru">5.2%</span> dari bulan lalu
+        </div>
+      </div>
+      
+      <div class="stat-card green">
+        <div class="stat-card-header">
+          <div class="stat-card-title">Terselesaikan</div>
+          <div class="stat-card-icon green">
+            <i class="fas fa-check-circle"></i>
+          </div>
+        </div>
+        <div class="stat-card-value" id="terselesaikan">932</div>
+        <div class="stat-card-change positive">
+          <i class="fas fa-arrow-up"></i> <span id="persenTerselesaikan">8.7%</span> dari bulan lalu
+        </div>
+      </div>
+      
+      <div class="stat-card purple">
+        <div class="stat-card-header">
+          <div class="stat-card-title">Dalam Proses</div>
+          <div class="stat-card-icon purple">
+            <i class="fas fa-clock"></i>
+          </div>
+        </div>
+        <div class="stat-card-value" id="dalamProses">316</div>
+        <div class="stat-card-change negative">
+          <i class="fas fa-arrow-down"></i> <span id="persenDalamProses">3.1%</span> dari bulan lalu
+        </div>
+      </div>
+    </div>
+
+    <!-- Charts Section -->
+    <div class="charts-container">
+      <div class="chart-card">
+        <div class="chart-header">
+          <div class="chart-title">Tren Kasus Bulanan</div>
+          <div class="chart-actions">
+            <select id="periodeTren">
+              <option value="12">12 Bulan Terakhir</option>
+              <option value="6">6 Bulan Terakhir</option>
+              <option value="3">3 Bulan Terakhir</option>
+            </select>
+          </div>
+        </div>
+        <div class="chart-container">
+          <canvas id="trendChart"></canvas>
+        </div>
+      </div>
+      
+      <div class="chart-card">
+        <div class="chart-header">
+          <div class="chart-title">Distribusi Tindakan</div>
+          <div class="chart-actions">
+            <select id="periodeDistribusi">
+              <option value="bulanIni">Bulan Ini</option>
+              <option value="bulanLalu">Bulan Lalu</option>
+              <option value="tahunIni">Tahun Ini</option>
+            </select>
+          </div>
+        </div>
+        <div class="chart-container">
+          <canvas id="distributionChart"></canvas>
+        </div>
+      </div>
+    </div>
+
+    <!-- Info Sections -->
+    <div class="info-sections">
+      <section class="info-card">
+        <h2><i class="fas fa-info-circle"></i> Ringkasan Sistem</h2>
+        <ul>
+          <li><i class="fas fa-check"></i> Sistem ini membantu mencatat, merekap, dan melaporkan data TAK</li>
+          <li><i class="fas fa-check"></i> Dilengkapi CRUD data kasus orang asing</li>
+          <li><i class="fas fa-check"></i> Rekap otomatis bulanan</li>
+          <li><i class="fas fa-check"></i> Dashboard dengan grafik tren</li>
+          <li><i class="fas fa-check"></i> Ekspor laporan dalam format PDF dan Excel</li>
+        </ul>
+      </section>
+
+      <section class="info-card">
+        <h2><i class="fas fa-bullseye"></i> Tujuan Sistem</h2>
+        <ul>
+          <li><i class="fas fa-check"></i> Mempermudah pekerjaan petugas</li>
+          <li><i class="fas fa-check"></i> Mengurangi kesalahan pencatatan</li>
+          <li><i class="fas fa-check"></i> Mempercepat pembuatan laporan</li>
+          <li><i class="fas fa-check"></i> Meningkatkan akurasi data</li>
+          <li><i class="fas fa-check"></i> Mempermudah analisis data keimigrasian</li>
+        </ul>
+      </section>
+    </div>
+
+    <footer>
+      <p>© 2025 Sistem Informasi TAK - Direktorat Jenderal Imigrasi</p>
+    </footer>
+  </div>
+
+  <script>
+    // Data model untuk aplikasi
+    const appData = {
+      stats: {
+        totalKasus: 1248,
+        kasusBaru: 84,
+        terselesaikan: 932,
+        dalamProses: 316,
+        persenTotalKasus: 12.5,
+        persenKasusBaru: 5.2,
+        persenTerselesaikan: 8.7,
+        persenDalamProses: 3.1
+      },
+      trenKasus: [65, 59, 80, 81, 56, 72, 95, 84, 78, 90, 76, 88],
+      trenSelesai: [45, 48, 60, 65, 52, 68, 75, 70, 65, 78, 70, 80],
+      distribusiTindakan: [35, 25, 20, 15, 5],
+      periodeTren: '12',
+      periodeDistribusi: 'bulanIni'
+    };
+
+    // Fungsi untuk menyimpan data ke Local Storage
+    function saveToLocalStorage() {
+      localStorage.setItem('takDashboardData', JSON.stringify(appData));
+    }
+
+    // Fungsi untuk memuat data dari Local Storage
+    function loadFromLocalStorage() {
+      const savedData = localStorage.getItem('takDashboardData');
+      if (savedData) {
+        const parsedData = JSON.parse(savedData);
+        Object.assign(appData, parsedData);
+      }
+    }
+
+    // Fungsi untuk menghitung statistik berdasarkan data tindakan administratif
+    function updateStatsFromActions() {
+      const actionsData = JSON.parse(localStorage.getItem('administrativeActions')) || [];
+      const now = new Date();
+      const currentYear = now.getFullYear();
+      const currentMonth = now.getMonth();
+      let newCases = 0;
+      let resolved = 0;
+      let inProcess = 0;
+      actionsData.forEach(action => {
+        // Hitung kasus baru dalam bulan berjalan
+        const actionDate = new Date(action.actionDate);
+        if (!isNaN(actionDate.getTime()) && actionDate.getFullYear() === currentYear && actionDate.getMonth() === currentMonth) {
+          newCases++;
+        }
+        // Hitung status terselesaikan vs dalam proses jika properti status tersedia
+        if (action.status && typeof action.status === 'string') {
+          const statusLower = action.status.toLowerCase();
+          if (statusLower.includes('selesai')) {
+            resolved++;
+          } else {
+            inProcess++;
+          }
+        } else {
+          // Jika tidak ada status, anggap dalam proses
+          inProcess++;
+        }
+      });
+      // Hitung data bulan sebelumnya untuk perbandingan persentase
+      let prevNewCases = 0;
+      let prevResolved = 0;
+      let prevInProcess = 0;
+      // Tentukan tanggal awal bulan sebelumnya
+      let prevMonth = currentMonth - 1;
+      let prevYear = currentYear;
+      if (prevMonth < 0) {
+        prevMonth = 11;
+        prevYear--;
+      }
+      actionsData.forEach(action => {
+        const actionDate = new Date(action.actionDate);
+        if (isNaN(actionDate.getTime())) return;
+        if (actionDate.getFullYear() === prevYear && actionDate.getMonth() === prevMonth) {
+          prevNewCases++;
+          if (action.status && typeof action.status === 'string' && action.status.toLowerCase().includes('selesai')) {
+            prevResolved++;
+          } else {
+            prevInProcess++;
+          }
+        }
+      });
+
+      // Fungsi pembantu menghitung persentase perubahan
+      function calcPercent(currentVal, prevVal) {
+        if (prevVal && prevVal !== 0) {
+          return (((currentVal - prevVal) / prevVal) * 100).toFixed(1);
+        }
+        return '0.0';
+      }
+
+      // Set nilai statistik
+      appData.stats.totalKasus = actionsData.length;
+      appData.stats.kasusBaru = newCases;
+      appData.stats.terselesaikan = resolved;
+      appData.stats.dalamProses = inProcess;
+      // Hitung persentase perbandingan bulan ini dengan bulan lalu
+      appData.stats.persenTotalKasus = calcPercent(newCases, prevNewCases);
+      appData.stats.persenKasusBaru = calcPercent(newCases, prevNewCases);
+      appData.stats.persenTerselesaikan = calcPercent(resolved, prevResolved);
+      appData.stats.persenDalamProses = calcPercent(inProcess, prevInProcess);
+    }
+
+    // Fungsi untuk memperbarui tampilan statistik
+    function updateStatsDisplay() {
+      document.getElementById('totalKasus').textContent = appData.stats.totalKasus.toLocaleString();
+      document.getElementById('kasusBaru').textContent = appData.stats.kasusBaru.toLocaleString();
+      document.getElementById('terselesaikan').textContent = appData.stats.terselesaikan.toLocaleString();
+      document.getElementById('dalamProses').textContent = appData.stats.dalamProses.toLocaleString();
+      
+      document.getElementById('persenTotalKasus').textContent = appData.stats.persenTotalKasus + '%';
+      document.getElementById('persenKasusBaru').textContent = appData.stats.persenKasusBaru + '%';
+      document.getElementById('persenTerselesaikan').textContent = appData.stats.persenTerselesaikan + '%';
+      document.getElementById('persenDalamProses').textContent = appData.stats.persenDalamProses + '%';
+    }
+
+    // Fungsi untuk memperbarui grafik tren
+    function updateTrendChart() {
+      const months = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'];
+      const period = parseInt(appData.periodeTren);
+
+      // Hitung tren berdasarkan data tindakan administratif
+      const actionsData = JSON.parse(localStorage.getItem('administrativeActions')) || [];
+      const currentYear = new Date().getFullYear();
+      const monthlyCounts = Array(12).fill(0);
+      const monthlyResolved = Array(12).fill(0);
+
+      actionsData.forEach(action => {
+        const actionDate = new Date(action.actionDate);
+        if (isNaN(actionDate.getTime())) return;
+        if (actionDate.getFullYear() === currentYear) {
+          const mIdx = actionDate.getMonth();
+          monthlyCounts[mIdx]++;
+          if (action.status && typeof action.status === 'string' && action.status.toLowerCase().includes('selesai')) {
+            monthlyResolved[mIdx]++;
+          }
+        }
+      });
+
+      appData.trenKasus = monthlyCounts;
+      appData.trenSelesai = monthlyResolved;
+
+      trendChart.data.labels = months.slice(-period);
+      trendChart.data.datasets[0].data = monthlyCounts.slice(-period);
+      trendChart.data.datasets[1].data = monthlyResolved.slice(-period);
+      trendChart.update();
+    }
+
+    // Fungsi untuk memperbarui grafik distribusi
+    function updateDistributionChart() {
+      // Hitung distribusi tindakan berdasarkan periode yang dipilih
+      const actionsData = JSON.parse(localStorage.getItem('administrativeActions')) || [];
+      const now = new Date();
+      let startFilter;
+      let endFilter;
+      // Tentukan rentang waktu
+      if (appData.periodeDistribusi === 'bulanLalu') {
+        const bulanLalu = new Date(now.getFullYear(), now.getMonth() - 1, 1);
+        startFilter = new Date(bulanLalu.getFullYear(), bulanLalu.getMonth(), 1);
+        endFilter = new Date(bulanLalu.getFullYear(), bulanLalu.getMonth() + 1, 0, 23, 59, 59, 999);
+      } else if (appData.periodeDistribusi === 'tahunIni') {
+        startFilter = new Date(now.getFullYear(), 0, 1);
+        endFilter = new Date(now.getFullYear(), 11, 31, 23, 59, 59, 999);
+      } else {
+        // default: bulan ini
+        startFilter = new Date(now.getFullYear(), now.getMonth(), 1);
+        endFilter = new Date(now.getFullYear(), now.getMonth() + 1, 0, 23, 59, 59, 999);
+      }
+      // Inisialisasi kategori
+      const kategori = {
+        'Deportasi': 0,
+        'Penolakan': 0,
+        'Pencegahan': 0,
+        'Pembatasan': 0,
+        'Lainnya': 0
+      };
+      actionsData.forEach(action => {
+        const actionDate = new Date(action.actionDate);
+        if (isNaN(actionDate.getTime())) return;
+        if (actionDate >= startFilter && actionDate <= endFilter) {
+          const type = action.actionType || '';
+          const typeLower = type.toLowerCase();
+          if (typeLower.includes('deportasi')) {
+            kategori['Deportasi']++;
+          } else if (typeLower.includes('penolakan') || typeLower.includes('penolakan masuk')) {
+            kategori['Penolakan']++;
+          } else if (typeLower.includes('pencegahan') || typeLower.includes('penangkalan')) {
+            kategori['Pencegahan']++;
+          } else if (typeLower.includes('larangan') || typeLower.includes('pembatasan')) {
+            kategori['Pembatasan']++;
+          } else {
+            kategori['Lainnya']++;
+          }
+        }
+      });
+      const distribusiData = [
+        kategori['Deportasi'],
+        kategori['Penolakan'],
+        kategori['Pencegahan'],
+        kategori['Pembatasan'],
+        kategori['Lainnya']
+      ];
+      distributionChart.data.datasets[0].data = distribusiData;
+      distributionChart.update();
+    }
+
+    // Initialize Charts
+    let trendChart, distributionChart;
+    document.addEventListener('DOMContentLoaded', function() {
+      // Load data from Local Storage
+      loadFromLocalStorage();
+
+      // Perbarui statistik berdasarkan data tindakan administratif yang tersimpan
+      updateStatsFromActions();
+      
+      // Update UI with loaded data
+      updateStatsDisplay();
+      
+      // Set dropdown values
+      document.getElementById('periodeTren').value = appData.periodeTren;
+      document.getElementById('periodeDistribusi').value = appData.periodeDistribusi;
+      
+      // Trend Chart
+      const trendCtx = document.getElementById('trendChart').getContext('2d');
+      trendChart = new Chart(trendCtx, {
+        type: 'line',
+        data: {
+          labels: ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'],
+          datasets: [{
+            label: 'Kasus Baru',
+            data: appData.trenKasus,
+            borderColor: '#4361ee',
+            backgroundColor: 'rgba(67, 97, 238, 0.1)',
+            tension: 0.4,
+            fill: true
+          }, {
+            label: 'Kasus Selesai',
+            data: appData.trenSelesai,
+            borderColor: '#4cc9f0',
+            backgroundColor: 'rgba(76, 201, 240, 0.1)',
+            tension: 0.4,
+            fill: true
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: {
+              position: 'top',
+            }
+          },
+          scales: {
+            y: {
+              beginAtZero: true
+            }
+          }
+        }
+      });
+
+      // Distribution Chart
+      const distributionCtx = document.getElementById('distributionChart').getContext('2d');
+      distributionChart = new Chart(distributionCtx, {
+        type: 'doughnut',
+        data: {
+          labels: ['Deportasi', 'Penolakan', 'Pencegahan', 'Pembatasan', 'Lainnya'],
+          datasets: [{
+            data: appData.distribusiTindakan,
+            backgroundColor: [
+              '#4361ee',
+              '#4cc9f0',
+              '#f8961e',
+              '#a855f7',
+              '#f72585'
+            ],
+            borderWidth: 0
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: {
+              position: 'bottom'
+            }
+          }
+        }
+      });
+      
+      // Update charts with loaded data
+      updateTrendChart();
+      updateDistributionChart();
+      
+      // Event listeners for dropdown changes
+      document.getElementById('periodeTren').addEventListener('change', function() {
+        appData.periodeTren = this.value;
+        updateTrendChart();
+        saveToLocalStorage();
+      });
+      
+      document.getElementById('periodeDistribusi').addEventListener('change', function() {
+        appData.periodeDistribusi = this.value;
+        updateDistributionChart();
+        saveToLocalStorage();
+      });
+      
+      // Update statistik secara berkala untuk mencerminkan perubahan dari halaman lain
+      setInterval(function() {
+        updateStatsFromActions();
+        updateStatsDisplay();
+        updateTrendChart();
+        updateDistributionChart();
+        saveToLocalStorage();
+      }, 10000); // perbarui setiap 10 detik
+    });
+  </script>
+</body>
+</html>

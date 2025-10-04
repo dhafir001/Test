@@ -1,0 +1,82 @@
+<?php
+include 'config.php';
+
+// ==================== CEK PARAMETER ID ====================
+if (!isset($_GET['id'])) {
+    die(" ID tidak ditemukan di URL!");
+}
+
+$id = intval($_GET['id']); // pastikan aman integer
+
+// ==================== AMBIL DATA ====================
+$query = mysqli_query($conn, "SELECT * FROM orang_asing WHERE id=$id");
+if (mysqli_num_rows($query) == 0) {
+    die(" Data dengan ID tersebut tidak ada!");
+}
+$data = mysqli_fetch_assoc($query);
+
+// ==================== PROSES UPDATE ====================
+if (isset($_POST['submit'])) {
+    $nama = sanitize($_POST['nama']);
+    $kewarganegaraan = sanitize($_POST['kewarganegaraan']);
+    $paspor = sanitize($_POST['paspor']);
+
+    $update = mysqli_query($conn, "UPDATE orang_asing 
+                SET nama='$nama', kewarganegaraan='$kewarganegaraan', paspor='$paspor' 
+                WHERE id=$id");
+
+    if ($update) {
+        header("Location: orang_asing.php?pesan=updated");
+        exit;
+    } else {
+        echo " Gagal update data: " . mysqli_error($conn);
+    }
+}
+?>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Edit Orang Asing</title>
+    <!-- Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Include global styles for a modern look -->
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="bg-light">
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow">
+                <div class="card-header bg-warning text-dark">
+                    <h4 class="mb-0"> Edit Data Orang Asing</h4>
+                </div>
+                <div class="card-body">
+                    <form method="POST">
+                        <div class="mb-3">
+                            <label class="form-label">Nama</label>
+                            <input type="text" name="nama" class="form-control" value="<?= $data['nama']; ?>" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Kewarganegaraan</label>
+                            <input type="text" name="kewarganegaraan" class="form-control" value="<?= $data['kewarganegaraan']; ?>" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Paspor</label>
+                            <input type="text" name="paspor" class="form-control" value="<?= $data['paspor']; ?>" required>
+                        </div>
+                        <button type="submit" name="submit" class="btn btn-success"> Simpan Perubahan</button>
+                        <a href="orang_asing.php" class="btn btn-secondary">← Kembali</a>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
